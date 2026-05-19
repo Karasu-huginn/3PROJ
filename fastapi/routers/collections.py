@@ -60,7 +60,7 @@ def add_item_to_collection(db: db_dep, collection_id:int, media_id:int):
 
 @router.delete("/{collection_id}/item/{media_id}", status_code=status.HTTP_200_OK)
 def rm_item_from_collection(db: db_dep, collection_id:int, media_id:int):
-    result = db.query(CollectionsItems).filter(and_(*[Media.id == media_id, Collections.id == collection_id]))
+    result = db.query(CollectionsItems).filter(and_(CollectionsItems.media_id == media_id, CollectionsItems.collection_id == collection_id))
     if not result.first():
         return {"status":404, "details":"Not found"}
     result.delete()

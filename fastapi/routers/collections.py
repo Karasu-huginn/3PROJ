@@ -47,7 +47,7 @@ def update_collection(db: db_dep, collection_id:int, name:str="", is_public:bool
 
 @router.post("/{collection_id}/item/{media_id}", status_code=status.HTTP_201_CREATED)
 def add_item_to_collection(db: db_dep, collection_id:int, media_id:int):
-    result = db.query(CollectionsItems).filter(and_(*[Media.id == media_id, Collections.id == collection_id])).first()
+    result = db.query(CollectionsItems).filter(and_(CollectionsItems.media_id == media_id, CollectionsItems.collection_id == collection_id)).first()
     if result:
         return {"status":499, "details":"Resource already exists"}
     create_collection_item_model = CollectionsItems(

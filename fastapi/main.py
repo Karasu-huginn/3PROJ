@@ -1,14 +1,18 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import APIRouter, FastAPI, HTTPException, Depends
 from typing import List, Annotated
 import models
 from schemas import UserCreate, UserResponse
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from database import get_db
 
+import routers.collections as CR
 
 
 app = FastAPI()
+
+app.include_router(CR.router)
 
 origins = [                                 #autoriser connexion depuis localhost 3000
     'http://localhost:3000'
@@ -19,13 +23,7 @@ app.add_middleware(                         #ajouter middleware à l'app
     allow_origins=origins,
 )
 
-def get_Db():               # ouvrir la DB et la fermer à la fin
-    db = SessionLocal()
-    try:
-        yield db
-    finally:db.close()
-
-db_dependency = Annotated[Session, Depends(get_Db)]  #la db dépend de la session et aussi de ce que l'on récupère via Db
+db_dependency = Annotated[Session, Depends(get_db)]  #la db dépend de la session et aussi de ce que l'on récupère via Db
 
 models.Base.metadata.create_all(bind=engine)
 

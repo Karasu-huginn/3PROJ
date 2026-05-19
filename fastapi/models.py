@@ -28,15 +28,13 @@ class Collections(Base):
     poster_url = Column(String)
     is_public = Column(Boolean, default=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    name = Column(String)
 
 class CollectionsItems(Base):
     __tablename__ = 'collectionsItems'
     id = Column(Integer, primary_key=True, index=True)
-    user = Column(String)
-    title = Column(String)
-    poster_url = Column(String)
-    is_public = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    user_id = Column(Integer, ForeignKey("users.id"))
+    media_id = Column(Integer, ForeignKey('media.id'))
 
 class Reviews(Base):
     __tablename__ = 'reviews'

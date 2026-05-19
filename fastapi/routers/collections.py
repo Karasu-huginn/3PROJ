@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models import Collections, CollectionsItems, Media, Users
-from schemas import CollectionsBase, CollectionsItemsBase
+from models import Collections, CollectionsItems, Users
+from schemas import CollectionsBase, CollectionsItemsBase, CollectionItemMove
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from starlette import status
@@ -75,3 +75,22 @@ def rm_collection(db: db_dep, collection_id:int):
     result.delete()
     db.commit()
     return {"status":200, "details":"Resource deleted"}
+
+@router.patch("/{from_id}/item/{media_id}", status_code=status.HTTP_200_OK)
+def move_item_between_collections(db: db_dep, from_id:int, media_id:int, move:CollectionItemMove):
+    """Move a media's item from one collection to another, returning a body-status response."""
+    if not db.query(Collections).filter(Collections.id == move.to_collection_id).first():
+        return {"status":404, "details":"Not found"}
+
+    source_query = db.query(CollectionsItems).filter(and_(CollectionsItems.collection_id == from_id, CollectionsItems.media_id == media_id))
+    source_row = source_query.first()
+    if not source_row:
+        return {"status":404, "details":"Not found"}
+
+    duplicate = db.query(CollectionsItems).filter(and_(CollectionsItems.collection_id == move.to_collection_id, CollectionsItems.media_id == media_id)).first()
+    if duplicate:                                              #* because this also covers from_id == to_id (source row IS the duplicate)
+        return {"status":499, "details":"Resource already exists"}
+
+    source_row.collection_id = move.to_collection_id
+    db.commit()
+    return {"status":200, "details":"Resource updated"}

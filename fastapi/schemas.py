@@ -21,3 +21,6 @@ class CollectionsBase(BaseModel):
 class CollectionsItemsBase(BaseModel):
     collection_id : int
     media_id : int
+
+class CollectionItemMove(BaseModel):
+    to_collection_id : int

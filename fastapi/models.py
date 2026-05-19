@@ -33,7 +33,7 @@ class Collections(Base):
 class CollectionsItems(Base):
     __tablename__ = 'collectionsItems'
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    collection_id = Column(Integer, ForeignKey('collections.id'))
     media_id = Column(Integer, ForeignKey('media.id'))
 
 class Reviews(Base):

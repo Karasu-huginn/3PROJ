@@ -6,12 +6,15 @@ class Users(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
-    password = Column(String)
+    password = Column(String, nullable=True)
     pseudo = Column(String, index=True)
     avatar_url = Column(String, nullable=True)
     role = Column(String, default='user')
     bio = Column(String, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    is_active = Column(Boolean, default=True)
+    oauth_provider = Column(String, nullable=True)
+    oauth_id = Column(String, nullable=True)
 
 class Media(Base):
     __tablename__ = 'media'
@@ -105,3 +108,9 @@ class ReportComments(Base):
     reason = Column(String)
     status = Column(Boolean, default=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+class RevokedTokens(Base):
+    __tablename__ = 'revoked_tokens'
+    id = Column(Integer, primary_key=True, index=True)
+    jti = Column(String, unique=True, index=True)
+    revoked_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

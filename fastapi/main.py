@@ -4,6 +4,7 @@ import models
 from schemas import UserCreate, UserResponse
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
+from auth.router import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -44,3 +45,5 @@ def create_user(user: UserCreate, db :db_dependency):
 @app.get("/users/", response_model=List[UserResponse])              #afficher user via la liste 
 def get_users(db: db_dependency):
     return db.query(models.Users).all()
+
+app.include_router(auth_router) 

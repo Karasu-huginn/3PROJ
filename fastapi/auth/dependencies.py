@@ -53,7 +53,7 @@ def get_optional_user(
     db: Annotated[Session, Depends(get_db)],
     credentials: Annotated[
         Optional[HTTPAuthorizationCredentials],
-        Depends(HTTPBearer(auto_error=False)),  # auto_error=False → None si pas de header
+        Depends(HTTPBearer(auto_error=False)),
     ] = None,
 ) -> Optional[models.Users]:
     if credentials is None:

@@ -6,6 +6,7 @@ from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 from auth.router import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
+from media.router import router as media_router
 
 
 
@@ -47,3 +48,4 @@ def get_users(db: db_dependency):
     return db.query(models.Users).all()
 
 app.include_router(auth_router) 
+app.include_router(media_router)

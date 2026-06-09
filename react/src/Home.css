@@ -1,0 +1,443 @@
+/* ==========================================================================
+   VARIABLES DE COULEURS (Inspirées de la charte graphique de ta maquette)
+   ========================================================================== */
+.app-container.light {
+  --bg-card: #ffffff;
+  --bg-inner: #f8fafc;
+  --bg-input: #f1f5f9;
+  --border-color: #e2e8f0;
+  --border-input: #cbd5e1;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --text-sub: #334155;
+  --accent-color: #2ab5cf; /* Le bleu/cyan de ScrumTeamSite */
+}
+
+.app-container.dark {
+  --bg-card: #111113;
+  --bg-inner: #0a0a0c;
+  --bg-input: #1c1c1e;
+  --border-color: #1c1c1e;
+  --border-input: #2c2c2e;
+  --text-main: #f1f5f9;
+  --text-muted: #64748b;
+  --text-sub: #cbd5e1;
+  --accent-color: #2ab5cf;
+}
+
+/* ==========================================================================
+   STRUCTURE DE LA PAGE (Grille principale à 2 colonnes)
+   ========================================================================== */
+.home-container {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 25px;
+  align-items: start;
+  width: 100%;
+}
+
+.feed-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.loading-text {
+  text-align: center;
+  padding: 40px;
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   COMPOSANTS / ENCADRÉS (Share Box, Feed Card, Sidebar Card)
+   ========================================================================== */
+.share-box, .feed-card, .sidebar-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  text-align: left;
+  box-sizing: border-box;
+}
+
+/* Zone de publication */
+.share-box-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.feed-avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.share-box-input {
+  flex: 1;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-inner);
+  color: var(--text-main);
+  padding: 10px 18px;
+  border-radius: 20px;
+  outline: none;
+}
+
+.share-box-actions {
+  display: flex;
+  gap: 25px;
+  margin-top: 15px;
+  padding-left: 52px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.share-box-actions span {
+  cursor: pointer;
+}
+
+/* Barre latérale (Sidebar) */
+.sidebar-title {
+  margin: 0 0 15px 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.sidebar-title.empty-title {
+  margin: 0;
+}
+
+.sidebar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.manga-popular-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.manga-popular-cover {
+  width: 35px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.manga-popular-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.manga-popular-author {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.see-more-link {
+  color: var(--accent-color);
+  font-size: 0.8rem;
+  margin-top: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   ZONE DE RECHERCHE ET FILTRES (Intégration Recherche.tsx)
+   ========================================================================== */
+.search-wrapper-container {
+  background-color: var(--bg-card);
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.search-back-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.search-back-row span {
+  font-size: 0.85rem;
+  color: var(--accent-color);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.search-component-container {
+  width: 100%;
+}
+
+.search-bar-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.search-input-field {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  outline: none;
+  background-color: var(--bg-inner);
+  color: var(--text-main);
+}
+
+.btn-filters-trigger {
+  padding: 0 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: var(--accent-color);
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* Modale de filtres avancés */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-card {
+  background: var(--bg-card);
+  padding: 30px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 420px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.modal-header-title {
+  margin: 0 0 20px 0;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.modal-input-group, .modal-input-group2 {
+  margin-bottom: 15px;
+}
+
+.modal-input-group2 {
+  margin-bottom: 25px;
+}
+
+.modal-input-group label, .modal-input-group2 label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.modal-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--bg-inner);
+  color: var(--text-main);
+  border: 1px solid var(--border-input);
+  box-sizing: border-box;
+  outline: none;
+}
+
+.modal-actions-row {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-modal-reset {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-input);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-modal-apply {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent-color);
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Grille de résultats MangaDex */
+.manga-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.manga-result-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.manga-result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.manga-card-cover-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.manga-card-body {
+  padding: 12px;
+  text-align: left;
+}
+
+.manga-card-body h4 {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.manga-card-body p {
+  margin: 0 0 10px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.manga-card-status-tag {
+  font-size: 0.65rem;
+  background: var(--bg-inner);
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-sub);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Vue Détail d'un Manga */
+.manga-detail-container {
+  background: var(--bg-card);
+  text-align: left;
+}
+
+.btn-back {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border-input);
+  background: var(--bg-card);
+  color: var(--text-sub);
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.manga-detail-layout {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.manga-detail-cover {
+  width: 180px;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.manga-detail-info {
+  flex: 1;
+  min-width: 260px;
+}
+
+.manga-detail-title {
+  margin: 0 0 15px 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.manga-detail-meta-line {
+  margin: 6px 0;
+  font-size: 0.85rem;
+  color: var(--text-sub);
+}
+
+.manga-detail-genres {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.genre-badge {
+  background: var(--bg-inner);
+  color: var(--text-sub);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.manga-detail-synopsis {
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-size: 0.85rem;
+  margin-top: 15px;
+}
+
+.search-loading-text, .search-end-text, .error-message {
+  text-align: center;
+  margin: 25px 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

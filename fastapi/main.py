@@ -20,6 +20,9 @@ origins = [                                 #autoriser connexion depuis localhos
 app.add_middleware(                         #ajouter middleware à l'app
     CORSMiddleware,
     allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 db_dependency = Annotated[Session, Depends(get_db)]  #la db dépend de la session et aussi de ce que l'on récupère via Db

@@ -1,34 +1,88 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import Home from './Home'
+import Recherche from './Recherche'
+import RechercheUsers from './RechercheUsers' 
+import Auth from './auth' 
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const [currentTab, setCurrentTab] = useState<'accueil' | 'recherche' | 'recherche-users' | 'profil'>('accueil')
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className={`app-container ${theme}`}>
+      
+      <header className="main-header">
+        <div className="header-left">
+          <h1 className="header-logo" onClick={() => setCurrentTab('accueil')} style={{ cursor: 'pointer' }}>
+            Scrum<span>TeamSite</span>
+          </h1>
+          <nav className="header-nav">
+            <span 
+              className={`nav-link ${currentTab === 'accueil' ? 'active' : 'muted'}`}
+              onClick={() => setCurrentTab('accueil')}
+            >
+              Accueil
+            </span>
+            <span 
+              className={`nav-link ${currentTab === 'recherche' ? 'active' : 'muted'}`}
+              onClick={() => setCurrentTab('recherche')}
+            >
+              Découvrir
+            </span>
+            <span className="nav-link muted">Bibliothèque</span>
+          </nav>
+        </div>
+
+        <div className="header-right-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          
+          <button 
+            onClick={() => setCurrentTab('recherche-users')}
+            className="theme-toggle-btn"
+            style={currentTab === 'recherche-users' ? { borderColor: 'var(--accent-color)', color: 'var(--accent-color)' } : {}}
+          >
+            🔍
+          </button>
+
+          <button 
+            onClick={() => console.log("Voir les favoris")}
+            className="theme-toggle-btn"
+          >
+            ❤️
+          </button>
+
+          <button 
+            onClick={() => setCurrentTab('profil')}
+            className="theme-toggle-btn"
+            style={currentTab === 'profil' ? { borderColor: 'var(--accent-color)', color: 'var(--accent-color)' } : {}}
+          >
+            👤
+          </button>
+
+          <button 
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="theme-toggle-btn"
+          >
+            {theme === 'dark' ? '☀️ Mode Clair' : '🌙 Mode Sombre'}
+          </button>
+        </div>
+      </header>
+
+     
+      <main className="main-content-wrapper">
+        {currentTab === 'accueil' && <Home />}
+        {currentTab === 'recherche' && <Recherche />}
+        {currentTab === 'recherche-users' && <RechercheUsers />}
+        
+        {currentTab === 'profil' && (
+          <Auth onBackToHome={() => setCurrentTab('accueil')} />
+        )}
+      </main>
+
+      <footer className="main-footer">
+        <p>© 2026 ScrumTeamSite — Réseau Social Manga</p>
+      </footer>
+    </div>
   )
 }
 

@@ -28,7 +28,7 @@ def login_as(user):
 
 @pytest.fixture()
 def db_session():
-    """Yield a session on freshly recreated tables."""
+    """Yield a session after dropping and recreating all tables."""
     models.Base.metadata.drop_all(bind=database.engine)
     models.Base.metadata.create_all(bind=database.engine)
     session = database.SessionLocal()
@@ -58,6 +58,7 @@ def user_two(db_session):
 
 @pytest.fixture()
 def client(db_session, user_one):
-    """Return a TestClient authenticated as user_one."""
+    """Yield a TestClient authenticated as user_one."""
     current_test_user["user"] = user_one
-    return TestClient(app)
+    yield TestClient(app)
+    current_test_user["user"] = None

@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import Home from './Home'
 import Recherche from './Recherche'
-import RechercheUsers from './RechercheUsers' 
-import Auth from './auth' 
+import RechercheUsers from './RechercheUsers'
+import Auth from './auth'
+import Bibliotheque from './Bibliotheque'
 import './App.css'
 
 function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
-  const [currentTab, setCurrentTab] = useState<'accueil' | 'recherche' | 'recherche-users' | 'profil'>('accueil')
+  const [currentTab, setCurrentTab] = useState<'accueil' | 'recherche' | 'recherche-users' | 'profil' | 'bibliotheque'>('accueil')
 
   return (
     <div className={`app-container ${theme}`}>
@@ -30,7 +31,12 @@ function App() {
             >
               Découvrir
             </span>
-            <span className="nav-link muted">Bibliothèque</span>
+            <span
+              className={`nav-link ${currentTab === 'bibliotheque' ? 'active' : 'muted'}`}
+              onClick={() => setCurrentTab('bibliotheque')}
+            >
+              Bibliothèque
+            </span>
           </nav>
         </div>
 
@@ -76,6 +82,9 @@ function App() {
         
         {currentTab === 'profil' && (
           <Auth onBackToHome={() => setCurrentTab('accueil')} />
+        )}
+        {currentTab === 'bibliotheque' && (
+          <Bibliotheque onGoToLogin={() => setCurrentTab('profil')} />
         )}
       </main>
 

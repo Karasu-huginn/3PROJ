@@ -100,3 +100,9 @@ def test_move_item_duplicate_in_target_409(client, seeded_media):
         json={"to_collection_id": target_id},
     )
     assert response.status_code == 409
+
+
+def test_get_items_nonexistent_collection_404(client):
+    """Items of a collection that does not exist return 404."""
+    response = client.get("/collections/999999/items")
+    assert response.status_code == 404

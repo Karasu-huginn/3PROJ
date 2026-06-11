@@ -87,6 +87,47 @@ def get_my_collections(db: db_dep, current_user: user_dep):
     return [serialize_collection(db, collection) for collection in collections]
 
 
+@router.get("/me/membership/{media_id}")
+def get_media_membership(db: db_dep, current_user: user_dep, media_id: str):
+    """Return the ids of the caller's collections containing the media."""
+    rows = (
+        db.query(models.CollectionsItems.collection_id)
+        .join(models.Collections, models.Collections.id == models.CollectionsItems.collection_id)
+        .filter(and_(models.Collections.user_id == current_user.id, models.CollectionsItems.media_id == media_id))
+        .all()
+    )
+    return {"collection_ids": [row.collection_id for row in rows]}
+
+
+@router.put("/me/status/{media_id}")
+def set_media_status(db: db_dep, current_user: user_dep, media_id: str, status_update: CollectionStatusUpdate):
+    """Place the media in one default collection, or clear its status with null."""
+    ensure_default_collections(db, current_user.id)
+    default_collections = (
+        db.query(models.Collections)
+        .filter(and_(models.Collections.user_id == current_user.id, models.Collections.is_default.is_(True)))
+        .all()
+    )
+    default_ids = [collection.id for collection in default_collections]
+    target_id = status_update.collection_id
+    if target_id is not None and target_id not in default_ids:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="La cible doit être une de tes listes par défaut")
+    other_default_ids = [collection_id for collection_id in default_ids if collection_id != target_id]
+    db.query(models.CollectionsItems).filter(
+        and_(models.CollectionsItems.media_id == media_id, models.CollectionsItems.collection_id.in_(other_default_ids))
+    ).delete(synchronize_session=False)
+    if target_id is not None:
+        already_present = (
+            db.query(models.CollectionsItems)
+            .filter(and_(models.CollectionsItems.collection_id == target_id, models.CollectionsItems.media_id == media_id))
+            .first()
+        )
+        if not already_present:
+            db.add(models.CollectionsItems(collection_id=target_id, media_id=media_id))
+    db.commit()
+    return {"collection_id": target_id}
+
+
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_collection(db: db_dep, current_user: user_dep, collection_create: CollectionCreate):
     """Create a custom collection owned by the caller."""

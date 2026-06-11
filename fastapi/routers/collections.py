@@ -22,7 +22,7 @@ def ensure_default_collections(db: Session, user_id: int) -> None:
     existing_names = {
         collection.name
         for collection in db.query(models.Collections)
-        .filter(and_(models.Collections.user_id == user_id, models.Collections.is_default == True))
+        .filter(and_(models.Collections.user_id == user_id, models.Collections.is_default.is_(True)))
         .all()
     }
     missing_names = [name for name in DEFAULT_COLLECTION_NAMES if name not in existing_names]

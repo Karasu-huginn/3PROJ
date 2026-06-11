@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class UserCreate(BaseModel):
@@ -24,3 +25,14 @@ class CollectionsItemsBase(BaseModel):
 
 class CollectionItemMove(BaseModel):
     to_collection_id : int
+
+class CollectionCreate(BaseModel):
+    name : str
+    is_public : bool = True
+
+class CollectionUpdate(BaseModel):
+    name : Optional[str] = None
+    is_public : Optional[bool] = None
+
+class CollectionStatusUpdate(BaseModel):
+    collection_id : Optional[int] = None

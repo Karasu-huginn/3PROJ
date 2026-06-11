@@ -11,8 +11,8 @@ from schemas import CollectionCreate, CollectionUpdate, CollectionStatusUpdate, 
 
 router = APIRouter(prefix="/collections", tags=["collections"])
 
-db_dep = Annotated[Session, Depends(get_db)]
-user_dep = Annotated[models.Users, Depends(get_current_user)]
+db_dependency = Annotated[Session, Depends(get_db)]
+user_dependency = Annotated[models.Users, Depends(get_current_user)]
 
 DEFAULT_COLLECTION_NAMES = ["À voir/lire", "En cours", "Terminé"]
 
@@ -75,7 +75,7 @@ def get_owned_collection(db: Session, user_id: int, collection_id: int) -> model
 
 
 @router.get("/me")
-def get_my_collections(db: db_dep, current_user: user_dep):
+def get_my_collections(db: db_dependency, current_user: user_dependency):
     """Return the caller's collections, defaults first, creating defaults if missing."""
     ensure_default_collections(db, current_user.id)
     collections = (
@@ -88,7 +88,7 @@ def get_my_collections(db: db_dep, current_user: user_dep):
 
 
 @router.get("/me/membership/{media_id}")
-def get_media_membership(db: db_dep, current_user: user_dep, media_id: str):
+def get_media_membership(db: db_dependency, current_user: user_dependency, media_id: str):
     """Return the ids of the caller's collections containing the media."""
     rows = (
         db.query(models.CollectionsItems.collection_id)
@@ -100,7 +100,7 @@ def get_media_membership(db: db_dep, current_user: user_dep, media_id: str):
 
 
 @router.put("/me/status/{media_id}")
-def set_media_status(db: db_dep, current_user: user_dep, media_id: str, status_update: CollectionStatusUpdate):
+def set_media_status(db: db_dependency, current_user: user_dependency, media_id: str, status_update: CollectionStatusUpdate):
     """Place the media in one default collection, or clear its status with null."""
     ensure_default_collections(db, current_user.id)
     default_collections = (
@@ -129,7 +129,7 @@ def set_media_status(db: db_dep, current_user: user_dep, media_id: str, status_u
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
-def create_collection(db: db_dep, current_user: user_dep, collection_create: CollectionCreate):
+def create_collection(db: db_dependency, current_user: user_dependency, collection_create: CollectionCreate):
     """Create a custom collection owned by the caller."""
     duplicate = (
         db.query(models.Collections)
@@ -151,7 +151,7 @@ def create_collection(db: db_dep, current_user: user_dep, collection_create: Col
 
 
 @router.patch("/{collection_id}")
-def update_collection(db: db_dep, current_user: user_dep, collection_id: int, collection_update: CollectionUpdate):
+def update_collection(db: db_dependency, current_user: user_dependency, collection_id: int, collection_update: CollectionUpdate):
     """Rename a collection and/or change its visibility."""
     collection = get_owned_collection(db, current_user.id, collection_id)
     if collection_update.name is not None:
@@ -177,7 +177,7 @@ def update_collection(db: db_dep, current_user: user_dep, collection_id: int, co
 
 
 @router.delete("/{collection_id}")
-def rm_collection(db: db_dep, current_user: user_dep, collection_id: int):
+def remove_collection(db: db_dependency, current_user: user_dependency, collection_id: int):
     """Delete a custom collection and its items."""
     collection = get_owned_collection(db, current_user.id, collection_id)
     if collection.is_default:
@@ -191,7 +191,7 @@ def rm_collection(db: db_dep, current_user: user_dep, collection_id: int):
 
 
 @router.get("/{collection_id}/items")
-def get_collection_items(db: db_dep, current_user: user_dep, collection_id: int):
+def get_collection_items(db: db_dependency, current_user: user_dependency, collection_id: int):
     """Return the collection's items joined with their media info."""
     collection = db.query(models.Collections).filter(models.Collections.id == collection_id).first()
     if not collection:
@@ -223,7 +223,7 @@ def get_collection_items(db: db_dep, current_user: user_dep, collection_id: int)
 
 
 @router.post("/{collection_id}/item/{media_id}", status_code=status.HTTP_201_CREATED)
-def add_item_to_collection(db: db_dep, current_user: user_dep, collection_id: int, media_id: str):
+def add_item_to_collection(db: db_dependency, current_user: user_dependency, collection_id: int, media_id: str):
     """Add a media to the caller's collection."""
     get_owned_collection(db, current_user.id, collection_id)
     duplicate = (
@@ -239,7 +239,7 @@ def add_item_to_collection(db: db_dep, current_user: user_dep, collection_id: in
 
 
 @router.delete("/{collection_id}/item/{media_id}")
-def rm_item_from_collection(db: db_dep, current_user: user_dep, collection_id: int, media_id: str):
+def remove_item_from_collection(db: db_dependency, current_user: user_dependency, collection_id: int, media_id: str):
     """Remove a media from the caller's collection."""
     get_owned_collection(db, current_user.id, collection_id)
     item_query = db.query(models.CollectionsItems).filter(
@@ -253,7 +253,7 @@ def rm_item_from_collection(db: db_dep, current_user: user_dep, collection_id: i
 
 
 @router.patch("/{from_id}/item/{media_id}")
-def move_item_between_collections(db: db_dep, current_user: user_dep, from_id: int, media_id: str, move: CollectionItemMove):
+def move_item_between_collections(db: db_dependency, current_user: user_dependency, from_id: int, media_id: str, move: CollectionItemMove):
     """Move a media's item from one of the caller's collections to another."""
     get_owned_collection(db, current_user.id, from_id)
     get_owned_collection(db, current_user.id, move.to_collection_id)

@@ -85,3 +85,25 @@ def get_my_collections(db: db_dep, current_user: user_dep):
         .all()
     )
     return [serialize_collection(db, collection) for collection in collections]
+
+
+@router.post("", status_code=status.HTTP_201_CREATED)
+def create_collection(db: db_dep, current_user: user_dep, collection_create: CollectionCreate):
+    """Create a custom collection owned by the caller."""
+    duplicate = (
+        db.query(models.Collections)
+        .filter(and_(models.Collections.user_id == current_user.id, models.Collections.name == collection_create.name))
+        .first()
+    )
+    if duplicate:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Une liste porte déjà ce nom")
+    collection = models.Collections(
+        user_id=current_user.id,
+        name=collection_create.name,
+        is_public=collection_create.is_public,
+        is_default=False,
+    )
+    db.add(collection)
+    db.commit()
+    db.refresh(collection)
+    return serialize_collection(db, collection)

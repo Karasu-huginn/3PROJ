@@ -355,3 +355,46 @@
 .user-card button:hover {
   opacity: 0.9;
 }
+
+.status-buttons-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-status-segment {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--text-muted);
+  background: var(--bg-inner);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.btn-status-segment.active {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+.btn-status-segment:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.custom-lists-block {
+  margin-top: 12px;
+}
+
+.custom-list-checkbox {
+  display: block;
+  margin: 6px 0;
+  cursor: pointer;
+  color: var(--text-sub);
+}
+
+.library-error-message {
+  color: #ff4757;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}

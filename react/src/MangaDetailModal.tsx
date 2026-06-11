@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import LibraryActions from './LibraryActions'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -143,6 +144,10 @@ export default function MangaDetailModal({ mangaId, onClose }: MangaDetailModalP
                   {submittingAction ? "Envoi..." : "Noter"}
                 </button>
               </div>
+            )}
+
+            {localStorage.getItem("token") && (
+              <LibraryActions mediaId={mangaId} />
             )}
 
             <h3 className="reviews-section-title">Critiques de la communauté</h3>

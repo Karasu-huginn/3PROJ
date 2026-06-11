@@ -17,8 +17,8 @@ export default function LibraryActions({ mediaId }: LibraryActionsProps) {
       const [myCollections, membership] = await Promise.all([fetchMyCollections(), fetchMembership(mediaId)])
       setCollections(myCollections)
       setMemberIds(membership.collection_ids)
-    } catch (err: any) {
-      setErrorMessage(err.message)
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Une erreur est survenue')
     }
   }, [mediaId])
 
@@ -36,8 +36,8 @@ export default function LibraryActions({ mediaId }: LibraryActionsProps) {
     try {
       await setMediaStatus(mediaId, collectionId === activeStatusId ? null : collectionId)
       await refreshLibraryState()
-    } catch (err: any) {
-      setErrorMessage(err.message)
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Une erreur est survenue')
     } finally {
       setIsBusy(false)
     }
@@ -53,8 +53,8 @@ export default function LibraryActions({ mediaId }: LibraryActionsProps) {
         await addItem(collectionId, mediaId)
       }
       await refreshLibraryState()
-    } catch (err: any) {
-      setErrorMessage(err.message)
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Une erreur est survenue')
     } finally {
       setIsBusy(false)
     }

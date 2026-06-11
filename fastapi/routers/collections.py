@@ -133,3 +133,17 @@ def update_collection(db: db_dep, current_user: user_dep, collection_id: int, co
     db.commit()
     db.refresh(collection)
     return serialize_collection(db, collection)
+
+
+@router.delete("/{collection_id}")
+def rm_collection(db: db_dep, current_user: user_dep, collection_id: int):
+    """Delete a custom collection and its items."""
+    collection = get_owned_collection(db, current_user.id, collection_id)
+    if collection.is_default:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Les listes par défaut ne peuvent pas être supprimées")
+    db.query(models.CollectionsItems).filter(
+        models.CollectionsItems.collection_id == collection_id
+    ).delete(synchronize_session=False)
+    db.delete(collection)
+    db.commit()
+    return {"detail": "Liste supprimée"}

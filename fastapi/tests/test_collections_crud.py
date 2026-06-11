@@ -1,3 +1,4 @@
+import models
 from conftest import login_as
 
 
@@ -69,4 +70,39 @@ def test_patch_not_owned_404(client, user_two):
     created = client.post("/collections", json={"name": "La mienne"}).json()
     login_as(user_two)
     response = client.patch(f"/collections/{created['id']}", json={"name": "Volée"})
+    assert response.status_code == 404
+
+
+def test_delete_custom_collection(client):
+    """Deleting a custom list removes it from /me."""
+    created = client.post("/collections", json={"name": "À jeter"}).json()
+    response = client.delete(f"/collections/{created['id']}")
+    assert response.status_code == 200
+    names = [collection["name"] for collection in client.get("/collections/me").json()]
+    assert "À jeter" not in names
+
+
+def test_delete_default_collection_403(client):
+    """Default lists cannot be deleted."""
+    default_ids = get_default_ids(client)
+    response = client.delete(f"/collections/{default_ids['Terminé']}")
+    assert response.status_code == 403
+
+
+def test_delete_cascades_items(client, db_session):
+    """Deleting a list also deletes its item rows."""
+    created = client.post("/collections", json={"name": "Avec items"}).json()
+    db_session.add(models.CollectionsItems(collection_id=created["id"], media_id="abc-123"))
+    db_session.commit()
+    client.delete(f"/collections/{created['id']}")
+    orphan_items = db_session.query(models.CollectionsItems).filter(
+        models.CollectionsItems.collection_id == created["id"]).all()
+    assert orphan_items == []
+
+
+def test_delete_not_owned_404(client, user_two):
+    """Another user's list looks nonexistent on delete too."""
+    created = client.post("/collections", json={"name": "La mienne"}).json()
+    login_as(user_two)
+    response = client.delete(f"/collections/{created['id']}")
     assert response.status_code == 404

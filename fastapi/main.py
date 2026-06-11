@@ -2,12 +2,13 @@ from fastapi import FastAPI, HTTPException, Depends
 from typing import List, Annotated
 import models
 from schemas import UserCreate, UserResponse
-from database import engine, SessionLocal
+from database import engine, SessionLocal, get_db
 from sqlalchemy.orm import Session
 from auth.router import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 from media.router import router as media_router
 
+import routers.collections as CR
 
 
 app = FastAPI()
@@ -21,13 +22,7 @@ app.add_middleware(                         #ajouter middleware à l'app
     allow_origins=origins,
 )
 
-def get_Db():               # ouvrir la DB et la fermer à la fin
-    db = SessionLocal()
-    try:
-        yield db
-    finally:db.close()
-
-db_dependency = Annotated[Session, Depends(get_Db)]  #la db dépend de la session et aussi de ce que l'on récupère via Db
+db_dependency = Annotated[Session, Depends(get_db)]  #la db dépend de la session et aussi de ce que l'on récupère via Db
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -47,5 +42,6 @@ def create_user(user: UserCreate, db :db_dependency):
 def get_users(db: db_dependency):
     return db.query(models.Users).all()
 
-app.include_router(auth_router) 
+app.include_router(auth_router)
 app.include_router(media_router)
+app.include_router(CR.router)

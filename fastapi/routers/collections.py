@@ -107,3 +107,29 @@ def create_collection(db: db_dep, current_user: user_dep, collection_create: Col
     db.commit()
     db.refresh(collection)
     return serialize_collection(db, collection)
+
+
+@router.patch("/{collection_id}")
+def update_collection(db: db_dep, current_user: user_dep, collection_id: int, collection_update: CollectionUpdate):
+    """Rename a collection and/or change its visibility."""
+    collection = get_owned_collection(db, current_user.id, collection_id)
+    if collection_update.name is not None:
+        if collection.is_default:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Les listes par défaut ne peuvent pas être renommées")
+        duplicate = (
+            db.query(models.Collections)
+            .filter(and_(
+                models.Collections.user_id == current_user.id,
+                models.Collections.name == collection_update.name,
+                models.Collections.id != collection_id,
+            ))
+            .first()
+        )
+        if duplicate:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Une liste porte déjà ce nom")
+        collection.name = collection_update.name
+    if collection_update.is_public is not None:
+        collection.is_public = collection_update.is_public
+    db.commit()
+    db.refresh(collection)
+    return serialize_collection(db, collection)

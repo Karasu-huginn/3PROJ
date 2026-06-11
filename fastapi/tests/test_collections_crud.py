@@ -25,3 +25,48 @@ def test_create_collection_same_name_other_user(client, user_two):
     login_as(user_two)
     response = client.post("/collections", json={"name": "Coups de coeur"})
     assert response.status_code == 201
+
+
+def get_default_ids(client):
+    """Return name→id mapping of the caller's default lists."""
+    payload = client.get("/collections/me").json()
+    return {collection["name"]: collection["id"] for collection in payload if collection["is_default"]}
+
+
+def test_rename_custom_collection(client):
+    """Renaming a custom list works."""
+    created = client.post("/collections", json={"name": "Avant"}).json()
+    response = client.patch(f"/collections/{created['id']}", json={"name": "Après"})
+    assert response.status_code == 200
+    assert response.json()["name"] == "Après"
+
+
+def test_rename_default_collection_403(client):
+    """Default lists cannot be renamed."""
+    default_ids = get_default_ids(client)
+    response = client.patch(f"/collections/{default_ids['En cours']}", json={"name": "Hacké"})
+    assert response.status_code == 403
+
+
+def test_toggle_visibility_on_default(client):
+    """is_public can be changed even on a default list."""
+    default_ids = get_default_ids(client)
+    response = client.patch(f"/collections/{default_ids['En cours']}", json={"is_public": False})
+    assert response.status_code == 200
+    assert response.json()["is_public"] is False
+
+
+def test_rename_to_existing_name_409(client):
+    """Renaming onto another of the user's list names is rejected."""
+    client.post("/collections", json={"name": "Liste A"})
+    created_b = client.post("/collections", json={"name": "Liste B"}).json()
+    response = client.patch(f"/collections/{created_b['id']}", json={"name": "Liste A"})
+    assert response.status_code == 409
+
+
+def test_patch_not_owned_404(client, user_two):
+    """Another user's list looks nonexistent."""
+    created = client.post("/collections", json={"name": "La mienne"}).json()
+    login_as(user_two)
+    response = client.patch(f"/collections/{created['id']}", json={"name": "Volée"})
+    assert response.status_code == 404

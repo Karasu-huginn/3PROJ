@@ -147,3 +147,88 @@ def rm_collection(db: db_dep, current_user: user_dep, collection_id: int):
     db.delete(collection)
     db.commit()
     return {"detail": "Liste supprimée"}
+
+
+@router.get("/{collection_id}/items")
+def get_collection_items(db: db_dep, current_user: user_dep, collection_id: int):
+    """Return the collection's items joined with their media info."""
+    collection = db.query(models.Collections).filter(models.Collections.id == collection_id).first()
+    if not collection:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Liste introuvable")
+    if collection.user_id != current_user.id and not collection.is_public:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cette liste est privée")
+    rows = (
+        db.query(
+            models.CollectionsItems.media_id,
+            models.Media.title_fr,
+            models.Media.title_en,
+            models.Media.title_original,
+            models.Media.cover_url,
+        )
+        .outerjoin(models.Media, models.Media.id == models.CollectionsItems.media_id)  #* because an item must stay visible even if its Media cache row vanished
+        .filter(models.CollectionsItems.collection_id == collection_id)
+        .order_by(models.CollectionsItems.id.asc())
+        .all()
+    )
+    items = [
+        {
+            "media_id": row.media_id,
+            "title": row.title_fr or row.title_en or row.title_original or "Titre inconnu",
+            "cover_url": row.cover_url,
+        }
+        for row in rows
+    ]
+    return {"collection": serialize_collection(db, collection), "items": items}
+
+
+@router.post("/{collection_id}/item/{media_id}", status_code=status.HTTP_201_CREATED)
+def add_item_to_collection(db: db_dep, current_user: user_dep, collection_id: int, media_id: str):
+    """Add a media to the caller's collection."""
+    get_owned_collection(db, current_user.id, collection_id)
+    duplicate = (
+        db.query(models.CollectionsItems)
+        .filter(and_(models.CollectionsItems.collection_id == collection_id, models.CollectionsItems.media_id == media_id))
+        .first()
+    )
+    if duplicate:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Ce manga est déjà dans la liste")
+    db.add(models.CollectionsItems(collection_id=collection_id, media_id=media_id))
+    db.commit()
+    return {"detail": "Manga ajouté à la liste"}
+
+
+@router.delete("/{collection_id}/item/{media_id}")
+def rm_item_from_collection(db: db_dep, current_user: user_dep, collection_id: int, media_id: str):
+    """Remove a media from the caller's collection."""
+    get_owned_collection(db, current_user.id, collection_id)
+    item_query = db.query(models.CollectionsItems).filter(
+        and_(models.CollectionsItems.collection_id == collection_id, models.CollectionsItems.media_id == media_id)
+    )
+    if not item_query.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Manga absent de la liste")
+    item_query.delete(synchronize_session=False)
+    db.commit()
+    return {"detail": "Manga retiré de la liste"}
+
+
+@router.patch("/{from_id}/item/{media_id}")
+def move_item_between_collections(db: db_dep, current_user: user_dep, from_id: int, media_id: str, move: CollectionItemMove):
+    """Move a media's item from one of the caller's collections to another."""
+    get_owned_collection(db, current_user.id, from_id)
+    get_owned_collection(db, current_user.id, move.to_collection_id)
+    source_query = db.query(models.CollectionsItems).filter(
+        and_(models.CollectionsItems.collection_id == from_id, models.CollectionsItems.media_id == media_id)
+    )
+    source_row = source_query.first()
+    if not source_row:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Manga absent de la liste source")
+    duplicate = (
+        db.query(models.CollectionsItems)
+        .filter(and_(models.CollectionsItems.collection_id == move.to_collection_id, models.CollectionsItems.media_id == media_id))
+        .first()
+    )
+    if duplicate:  #* because this also covers from_id == to_id (the source row IS the duplicate)
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Ce manga est déjà dans la liste cible")
+    source_row.collection_id = move.to_collection_id
+    db.commit()
+    return {"detail": "Manga déplacé"}

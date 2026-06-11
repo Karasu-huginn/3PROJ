@@ -62,3 +62,17 @@ def client(db_session, user_one):
     current_test_user["user"] = user_one
     yield TestClient(app)
     current_test_user["user"] = None
+
+
+@pytest.fixture()
+def seeded_media(db_session):
+    """Create and return a cached media row."""
+    media = models.Media(
+        id="11111111-1111-1111-1111-111111111111",
+        type="manga",
+        title_original="Berserk",
+        cover_url="http://example.com/berserk.jpg",
+    )
+    db_session.add(media)
+    db_session.commit()
+    return media

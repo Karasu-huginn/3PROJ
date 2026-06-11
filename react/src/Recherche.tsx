@@ -158,7 +158,7 @@ export default function Recherche() {
       {!hasMore && mangas.length > 0 && <div className="status-message-centered" style={{opacity: 0.5}}>Fin de la collection. ✨</div>}
 
       {selectedMangaId && (
-        <MangaDetailModal mangaId={selectedMangaId} onClose={() => setSelectedMangaId(null)} />
+        <MangaDetailModal key={selectedMangaId} mangaId={selectedMangaId} onClose={() => setSelectedMangaId(null)} />
       )}
     </div>
   )

@@ -1,96 +1,87 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models import Collections, CollectionsItems, Users
-from schemas import CollectionsBase, CollectionsItemsBase, CollectionItemMove
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from sqlalchemy.orm import Session
 from starlette import status
-from database import get_db
 from typing import Annotated
+
+import models
+from auth.dependencies import get_current_user
+from database import get_db
+from schemas import CollectionCreate, CollectionUpdate, CollectionStatusUpdate, CollectionItemMove
 
 router = APIRouter(prefix="/collections", tags=["collections"])
 
 db_dep = Annotated[Session, Depends(get_db)]
+user_dep = Annotated[models.Users, Depends(get_current_user)]
 
-@router.get("")
-def get_collections(db: db_dep):
-    collections = db.query(Collections).all()
-    return collections
+DEFAULT_COLLECTION_NAMES = ["À voir/lire", "En cours", "Terminé"]
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
-def create_collection(db: db_dep, collection_base:CollectionsBase):
-    result = db.query(Collections).filter(and_(*[Users.id == collection_base.user_id, Collections.name == collection_base.name])).first()
-    if result:
-        return {"status":499, "details":"Resource already exists"}  #* because we don't want two collections having the same name
-    
-    create_collection_model = Collections(
-        user_id = collection_base.user_id,
-        poster_url = collection_base.poster_url,
-        is_public = collection_base.is_public,
-        name = collection_base.name
-    )
-    db.add(create_collection_model)
-    db.commit()
-    return {"status":201, "details":"Resource created"}
 
-@router.patch("/{collection_id}", status_code=status.HTTP_200_OK)
-def update_collection(db: db_dep, collection_id:int, name:str="", is_public:bool=None):
-    result_query = db.query(Collections).filter([Collections.id == collection_id])
-    if not result_query.first():
-        return {"status":404, "details":"Not found"}
-    update_dict = {
-        "name": name if name else Collections.name,
-        "is_public": is_public if is_public is not None else Collections.is_public
+def ensure_default_collections(db: Session, user_id: int) -> None:
+    """Create the user's missing default collections, if any."""
+    existing_names = {
+        collection.name
+        for collection in db.query(models.Collections)
+        .filter(and_(models.Collections.user_id == user_id, models.Collections.is_default == True))
+        .all()
     }
-    result_query.update(update_dict)
+    missing_names = [name for name in DEFAULT_COLLECTION_NAMES if name not in existing_names]
+    if not missing_names:
+        return
+    for name in missing_names:
+        db.add(models.Collections(user_id=user_id, name=name, is_default=True, is_public=True))
     db.commit()
-    return {"status":200, "details":"Resource updated"}
 
-@router.post("/{collection_id}/item/{media_id}", status_code=status.HTTP_201_CREATED)
-def add_item_to_collection(db: db_dep, collection_id:int, media_id:str):
-    result = db.query(CollectionsItems).filter(and_(CollectionsItems.media_id == media_id, CollectionsItems.collection_id == collection_id)).first()
-    if result:
-        return {"status":499, "details":"Resource already exists"}
-    create_collection_item_model = CollectionsItems(
-        collection_id = collection_id,
-        media_id = media_id
+
+def derive_poster_url(db: Session, collection_id: int):
+    """Return the cover of the collection's first item, or None."""
+    first_row = (
+        db.query(models.Media.cover_url)
+        .join(models.CollectionsItems, models.CollectionsItems.media_id == models.Media.id)
+        .filter(models.CollectionsItems.collection_id == collection_id)
+        .order_by(models.CollectionsItems.id.asc())
+        .first()
     )
-    db.add(create_collection_item_model)
-    db.commit()
-    return {"status":201, "details":"Resource created"}
+    return first_row.cover_url if first_row else None
 
-@router.delete("/{collection_id}/item/{media_id}", status_code=status.HTTP_200_OK)
-def rm_item_from_collection(db: db_dep, collection_id:int, media_id:str):
-    result = db.query(CollectionsItems).filter(and_(CollectionsItems.media_id == media_id, CollectionsItems.collection_id == collection_id))
-    if not result.first():
-        return {"status":404, "details":"Not found"}
-    result.delete()
-    db.commit()
-    return {"status":200, "details":"Resource deleted"}
 
-@router.delete("/{collection_id}", status_code=status.HTTP_200_OK)
-def rm_collection(db: db_dep, collection_id:int):
-    result = db.query(Collections).filter(Collections.id == collection_id)
-    if not result.first():
-        return {"status":404, "details":"Not found"}
-    result.delete()
-    db.commit()
-    return {"status":200, "details":"Resource deleted"}
+def serialize_collection(db: Session, collection: models.Collections) -> dict:
+    """Return the API representation of a collection."""
+    item_count = (
+        db.query(func.count(models.CollectionsItems.id))
+        .filter(models.CollectionsItems.collection_id == collection.id)
+        .scalar()
+    )
+    return {
+        "id": collection.id,
+        "name": collection.name,
+        "is_default": collection.is_default,
+        "is_public": collection.is_public,
+        "item_count": item_count,
+        "poster_url": collection.poster_url or derive_poster_url(db, collection.id),
+    }
 
-@router.patch("/{from_id}/item/{media_id}", status_code=status.HTTP_200_OK)
-def move_item_between_collections(db: db_dep, from_id:int, media_id:str, move:CollectionItemMove):
-    """Move a media's item from one collection to another, returning a body-status response."""
-    if not db.query(Collections).filter(Collections.id == move.to_collection_id).first():
-        return {"status":404, "details":"Not found"}
 
-    source_query = db.query(CollectionsItems).filter(and_(CollectionsItems.collection_id == from_id, CollectionsItems.media_id == media_id))
-    source_row = source_query.first()
-    if not source_row:
-        return {"status":404, "details":"Not found"}
+def get_owned_collection(db: Session, user_id: int, collection_id: int) -> models.Collections:
+    """Return the user's collection by id, raising 404 if absent or not owned."""
+    collection = (
+        db.query(models.Collections)
+        .filter(and_(models.Collections.id == collection_id, models.Collections.user_id == user_id))
+        .first()
+    )
+    if not collection:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Liste introuvable")
+    return collection
 
-    duplicate = db.query(CollectionsItems).filter(and_(CollectionsItems.collection_id == move.to_collection_id, CollectionsItems.media_id == media_id)).first()
-    if duplicate:                                              #* because this also covers from_id == to_id (source row IS the duplicate)
-        return {"status":499, "details":"Resource already exists"}
 
-    source_row.collection_id = move.to_collection_id
-    db.commit()
-    return {"status":200, "details":"Resource updated"}
+@router.get("/me")
+def get_my_collections(db: db_dep, current_user: user_dep):
+    """Return the caller's collections, defaults first, creating defaults if missing."""
+    ensure_default_collections(db, current_user.id)
+    collections = (
+        db.query(models.Collections)
+        .filter(models.Collections.user_id == current_user.id)
+        .order_by(models.Collections.is_default.desc(), models.Collections.id.asc())
+        .all()
+    )
+    return [serialize_collection(db, collection) for collection in collections]

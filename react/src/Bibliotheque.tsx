@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import type { Collection } from './api/collections'
 import { fetchMyCollections, createCollection, renameCollection, deleteCollection } from './api/collections'
 import ListeDetail from './ListeDetail'
-import MangaDetailModal from './MangaDetailModal'
 import './Bibliotheque.css'
 
 interface BibliothequeProps {
@@ -45,7 +44,6 @@ export default function Bibliotheque({ onGoToLogin }: BibliothequeProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null)
-  const [selectedMangaId, setSelectedMangaId] = useState<string | null>(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newListName, setNewListName] = useState("")
   const [newListIsPublic, setNewListIsPublic] = useState(true)
@@ -114,16 +112,10 @@ export default function Bibliotheque({ onGoToLogin }: BibliothequeProps) {
 
   if (selectedCollection) {
     return (
-      <>
-        <ListeDetail
-          collectionId={selectedCollection.id}
-          onBack={() => { setSelectedCollection(null); refreshCollections(); }}
-          onOpenManga={(mediaId) => setSelectedMangaId(mediaId)}
-        />
-        {selectedMangaId && (
-          <MangaDetailModal key={selectedMangaId} mangaId={selectedMangaId} onClose={() => setSelectedMangaId(null)} />
-        )}
-      </>
+      <ListeDetail
+        collectionId={selectedCollection.id}
+        onBack={() => { setSelectedCollection(null); refreshCollections(); }}
+      />
     )
   }
 

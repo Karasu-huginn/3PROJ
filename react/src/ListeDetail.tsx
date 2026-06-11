@@ -1,18 +1,19 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { CollectionDetail } from './api/collections'
 import { fetchCollectionItems, removeItem } from './api/collections'
+import MangaDetailModal from './MangaDetailModal'
 
 interface ListeDetailProps {
   collectionId: number
   onBack: () => void
-  onOpenManga: (mediaId: string) => void
 }
 
-export default function ListeDetail({ collectionId, onBack, onOpenManga }: ListeDetailProps) {
+export default function ListeDetail({ collectionId, onBack }: ListeDetailProps) {
   const [detail, setDetail] = useState<CollectionDetail | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [isBusy, setIsBusy] = useState(false)
+  const [selectedMangaId, setSelectedMangaId] = useState<string | null>(null)
 
   const refreshItems = useCallback(async () => {
     setIsLoading(true)
@@ -62,9 +63,9 @@ export default function ListeDetail({ collectionId, onBack, onOpenManga }: Liste
               src={item.cover_url || "https://via.placeholder.com/200x300?text=No+Cover"}
               alt={item.title}
               className="manga-card-cover"
-              onClick={() => onOpenManga(item.media_id)}
+              onClick={() => setSelectedMangaId(item.media_id)}
             />
-            <h3 className="manga-card-title" onClick={() => onOpenManga(item.media_id)}>{item.title}</h3>
+            <h3 className="manga-card-title" onClick={() => setSelectedMangaId(item.media_id)}>{item.title}</h3>
             <button
               className="btn-filters-trigger btn-retirer"
               disabled={isBusy}
@@ -75,6 +76,13 @@ export default function ListeDetail({ collectionId, onBack, onOpenManga }: Liste
           </div>
         ))}
       </div>
+      {selectedMangaId && (
+        <MangaDetailModal
+          key={selectedMangaId}
+          mangaId={selectedMangaId}
+          onClose={() => { setSelectedMangaId(null); refreshItems(); }}  //* because quick-add inside the modal can remove the manga from this very list
+        />
+      )}
     </div>
   )
 }

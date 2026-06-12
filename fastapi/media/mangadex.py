@@ -110,20 +110,45 @@ async def search_manga(
     genres: list[str] | None = None,
     year: int | None = None,
     status: str | None = None,
+    author: str | None = None,
+    themes: list[str] | None = None,
 ) -> dict:
-    params: dict = {
-        "title": query,
-        "limit": limit,
-        "offset": offset,
-        "includes[]": ["cover_art", "author"],
-        "availableTranslatedLanguage[]": ["fr", "en"],
-        "order[relevance]": "desc",
-    }
-    if year:
-        params["year"] = year
-    if status:
-        params["status[]"] = status
     async with httpx.AsyncClient(timeout=10) as client:
+
+        author_id = None
+        if author:
+            try:
+                r = await client.get(f"{MANGADEX_BASE}/author", params={"name": author, "limit": 1})
+                authors = r.json().get("data", [])
+                author_id = authors[0]["id"] if authors else None
+            except Exception:
+                pass
+
+        params: list = [
+            ("limit", limit),
+            ("offset", offset),
+            ("includes[]", "cover_art"),
+            ("includes[]", "author"),
+            ("availableTranslatedLanguage[]", "fr"),
+            ("availableTranslatedLanguage[]", "en"),
+            ("contentRating[]", "safe"),
+            ("order[relevance]", "desc"),
+        ]
+        if query:
+            params.append(("title", query))
+        if year:
+            params.append(("year", year))
+        if status:
+            params.append(("status[]", status))
+        if author_id:
+            params.append(("authorOrArtist", author_id))
+        if genres:
+            for g in genres:
+                params.append(("includedTags[]", g))
+        if themes:
+            for t in themes:
+                params.append(("includedTags[]", t))
+
         resp = await client.get(f"{MANGADEX_BASE}/manga", params=params)
         resp.raise_for_status()
 
@@ -161,6 +186,7 @@ async def search_manga(
             "status": attrs.get("status"),
             "genres": genres_list,
         })
+
     return {
         "results": results,
         "total": payload.get("total", len(results)),

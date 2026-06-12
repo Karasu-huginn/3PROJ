@@ -1,0 +1,400 @@
+/* ==========================================================================
+   ALIGNEMENT DE LA BARRE DE RECHERCHE
+   ========================================================================== */
+.search-wrapper-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.search-component-container form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.search-input-field {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 25px;
+  outline: none;
+}
+
+.btn-search-submit {
+  border: none;
+  padding: 0 25px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-filters-toggle {
+  border-radius: 25px;
+  padding: 0 20px;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   FILTRES (GENRES / THÈMES)
+   ========================================================================== */
+.filters-section {
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+.filters-title {
+  margin: 0 0 5px 0;
+}
+
+.tags-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tags-list-container-genres {
+  margin-bottom: 15px;
+}
+
+.tag-item {
+  padding: 4px 10px;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   GRILLE ET CARTES DE MANGAS
+   ========================================================================== */
+.manga-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.manga-card-clickable {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.manga-card-cover {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.manga-card-title {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+/* ==========================================================================
+   STRUCTURE DE LA MODALE INTERACTIVE (CORRIGÉE MODE CLAIR)
+   ========================================================================== */
+/* Arrière-plan opaque */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.75); /* Voile noir transparent sur le site en fond */
+}
+
+/* Boîtier de la fiche */
+.modal-content-box {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 15px;
+  padding: 25px;
+  box-sizing: border-box;
+  
+  /* FORÇAGE DES COULEURS POUR TOUS LES MODES (CLAIR & SOMBRE) */
+  background-color: #1a1a1e !important; /* Fond anthracite très propre */
+  color: #ffffff !important;            /* Texte blanc éclatant */
+  border: 1px solid #33333a;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Bouton de fermeture (✕) */
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #ffffff !important; /* Forcer la croix en blanc */
+  opacity: 0.7;
+}
+.modal-close-btn:hover {
+  opacity: 1;
+}
+
+/* Ajustement des textes secondaires de la modale */
+.modal-media-status, 
+.modal-media-description, 
+.review-item-author {
+  color: #a4a4af !important; /* Gris clair lisible sur fond sombre */
+}
+
+/* En-tête de la fiche détaillée */
+.modal-media-header {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.modal-media-cover {
+  width: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.modal-media-title {
+  margin: 0 0 10px 0;
+  color: #ffffff !important;
+}
+
+.modal-community-rating {
+  margin-top: 10px;
+}
+
+/* Blocs d'actions (Notes / Formulaires) */
+.modal-action-block {
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  background-color: #26262b; /* Légèrement plus clair que le fond de la modale */
+}
+
+.modal-action-title {
+  margin: 0 0 10px 0;
+  color: #ffffff !important;
+}
+
+.rating-select-dropdown {
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-right: 10px;
+  background: #121214;
+  color: white;
+  border: 1px solid #333;
+}
+
+.btn-action-submit {
+  border: none;
+  padding: 6px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #ff4757;
+  color: white;
+}
+
+/* Zone des avis */
+.reviews-section-title {
+  border-bottom: 1px solid #33333a;
+  padding-bottom: 5px;
+  color: #ffffff !important;
+}
+
+.reviews-scroll-container {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.review-item-card {
+  padding: 10px;
+  border-bottom: 1px solid #26262b;
+}
+
+.review-item-body {
+  font-size: 0.9rem;
+  margin: 5px 0;
+  color: #e4e4e6 !important;
+}
+
+.review-item-spoiler-tag {
+  font-size: 0.75rem;
+  margin-left: 10px;
+  font-weight: bold;
+  color: #ff4757;
+}
+
+/* Formulaire d'avis */
+.review-creation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #26262b;
+}
+
+.review-form-input,
+.review-form-textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background: #121214;
+  color: white;
+  border: 1px solid #333;
+}
+
+.review-form-textarea {
+  min-height: 60px;
+}
+
+.review-form-checkbox-label {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #ffffff;
+}
+
+.btn-review-publish {
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  background-color: #2ed573;
+  color: white;
+}
+
+/* États globaux */
+.status-message-centered {
+  text-align: center;
+  margin: 30px;
+}
+/* Style pour le filtre actuellement sélectionné */
+.tag-item.active {
+  background-color: #ff4757 !important; /* Devient rouge (ou la couleur de ton choix) */
+  color: #ffffff !important;            /* Texte blanc */
+  font-weight: bold;
+  border-color: transparent;
+}
+
+
+
+/* Container pour les résultats de recherche d'utilisateurs */
+.user-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding: 0 1rem;
+}
+
+/* Carte individuelle d'un utilisateur */
+.user-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #eaeaea);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Avatar utilisateur */
+.user-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  background-color: #ddd;
+}
+
+.user-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  color: var(--text-color);
+}
+
+/* Bouton "Voir profil" */
+.user-card button {
+  background-color: var(--accent-color, #ff6b6b);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.user-card button:hover {
+  opacity: 0.9;
+}
+
+.status-buttons-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-status-segment {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--text-muted);
+  background: var(--bg-inner);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.btn-status-segment.active {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+.btn-status-segment:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.custom-lists-block {
+  margin-top: 12px;
+}
+
+.custom-list-checkbox {
+  display: block;
+  margin: 6px 0;
+  cursor: pointer;
+  color: var(--text-sub);
+}
+
+.library-error-message {
+  color: #ff4757;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}

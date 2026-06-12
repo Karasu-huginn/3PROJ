@@ -55,6 +55,7 @@ class Collections(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     poster_url = Column(String)
     is_public = Column(Boolean, default=True)
+    is_default = Column(Boolean, default=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     name = Column(String)
 

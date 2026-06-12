@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Annotated, Optional
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
@@ -16,6 +17,43 @@ from media.schemas import (
 )
 
 router = APIRouter(prefix="/media", tags=["Manga — Fiches & Critiques"])
+
+
+@router.get("/tags")
+async def get_tags():
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.get("https://api.mangadex.org/manga/tag")
+            data = resp.json()
+        genres, themes = [], []
+        for tag in data.get("data", []):
+            entry = {"id": tag["id"], "name": tag["attributes"]["name"].get("en", "")}
+            group = tag["attributes"].get("group", "")
+            if group == "genre": genres.append(entry)
+            elif group == "theme": themes.append(entry)
+        return {"genres": genres, "themes": themes}
+    except Exception as e:
+        return {"error": str(e), "genres": [], "themes": []}
+
+
+@router.get("/search")
+async def search_manga(
+    title: str = Query(None),
+    year: int = Query(None),
+    author: str = Query(None),
+    genre: str = Query(None),
+    theme: str = Query(None),
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+):
+    from media import mangadex as mdx
+    return await mdx.search_manga(
+        query=title or "",
+        limit=limit, offset=offset,
+        year=year, author=author,
+        genres=[genre] if genre else None,
+        themes=[theme] if theme else None,
+    )
 
 @router.get(
     "/{media_id}",

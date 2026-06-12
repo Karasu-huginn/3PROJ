@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import './Recherche.css'
 import MangaDetailModal from './MangaDetailModal'
+import defaultCoverUrl from './assets/default-cover.svg'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -135,7 +136,7 @@ export default function Recherche() {
 
       <div className="manga-results-grid">
         {mangas.map((manga: any, index: number) => {
-          const currentCover = manga.coverUrl || manga.cover_url || "https://via.placeholder.com/200x300?text=No+Cover"
+          const currentCover = manga.coverUrl || manga.cover_url || defaultCoverUrl
 
           const isLastElement = mangas.length === index + 1
 

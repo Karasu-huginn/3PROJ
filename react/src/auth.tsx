@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './Home.css'
+import defaultAvatarUrl from './assets/default-avatar.svg'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -83,7 +84,7 @@ export default function Auth({ onBackToHome }: AuthProps) {
         <div className="search-component-container" style={{ textAlign: 'center', padding: '30px' }}>
           <div style={{ marginBottom: '20px' }}>
             <img 
-              src={user.avatar_url || "https://via.placeholder.com/100?text=👤"} 
+              src={user.avatar_url || defaultAvatarUrl} 
               alt="Avatar" 
               style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--accent-color)' }}
             />

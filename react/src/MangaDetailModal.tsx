@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import LibraryActions from './LibraryActions'
+import defaultCoverUrl from './assets/default-cover.svg'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -122,7 +123,7 @@ export default function MangaDetailModal({ mangaId, onClose }: MangaDetailModalP
         {mangaDetail && mangaDetail.media && !loadingDetail && (
           <div>
             <div className="modal-media-header">
-              <img src={mangaDetail.media.cover_url || "https://via.placeholder.com/120x180?text=No+Cover"} alt="" className="modal-media-cover" />
+              <img src={mangaDetail.media.cover_url || defaultCoverUrl} alt="" className="modal-media-cover" />
               <div>
                 <h2 className="modal-media-title">{mangaDetail.media.title}</h2>
                 <p className="modal-media-status">Statut : {mangaDetail.media.status || "Inconnu"}</p>

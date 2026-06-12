@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import type { CollectionDetail } from './api/collections'
 import { fetchCollectionItems, removeItem } from './api/collections'
 import MangaDetailModal from './MangaDetailModal'
+import defaultCoverUrl from './assets/default-cover.svg'
 
 interface ListeDetailProps {
   collectionId: number
@@ -60,7 +61,7 @@ export default function ListeDetail({ collectionId, onBack }: ListeDetailProps) 
         {detail?.items.map((item) => (
           <div key={item.media_id} className="search-component-container manga-card-clickable">
             <img
-              src={item.cover_url || "https://via.placeholder.com/200x300?text=No+Cover"}
+              src={item.cover_url || defaultCoverUrl}
               alt={item.title}
               className="manga-card-cover"
               onClick={() => setSelectedMangaId(item.media_id)}

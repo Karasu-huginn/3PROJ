@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './Home.css'
+import defaultCoverUrl from './assets/default-cover.svg'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -100,7 +101,7 @@ export default function Home() {
                 {popularManga.map((m: any, i: number) => (
                   <div key={m.id || i} className="manga-popular-item">
                     <img 
-                      src={m.cover_url || m.coverUrl || "https://via.placeholder.com/150x220?text=No+Cover"} 
+                      src={m.cover_url || m.coverUrl || defaultCoverUrl} 
                       alt={m.title} 
                       className="manga-popular-cover" 
                     />

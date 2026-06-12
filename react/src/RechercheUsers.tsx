@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import './Recherche.css' 
+import './Recherche.css'
+import defaultAvatarUrl from './assets/default-avatar.svg'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -40,7 +41,7 @@ export default function RechercheUsers() {
       <div className="user-results-grid">
         {users.map(user => (
           <div key={user.id} className="user-card">
-            <img src={user.avatar || 'https://via.placeholder.com/80'} alt={user.username} />
+            <img src={user.avatar || defaultAvatarUrl} alt={user.username} />
             <h3>{user.username}</h3>
             <button onClick={() => alert(`Ouvrir profil de ${user.username}`)}>
               Voir profil

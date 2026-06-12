@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import type { Collection } from './api/collections'
 import { fetchMyCollections, createCollection, renameCollection, deleteCollection } from './api/collections'
 import ListeDetail from './ListeDetail'
+import defaultListCoverUrl from './assets/default-list-cover.png'
 import './Bibliotheque.css'
 
 interface BibliothequeProps {
@@ -19,7 +20,7 @@ function ListeCard({ collection, onOpen, onRename, onDelete }: ListeCardProps) {
   return (
     <div className="search-component-container liste-card" onClick={onOpen}>
       <img
-        src={collection.poster_url || "https://via.placeholder.com/200x300?text=Liste"}
+        src={collection.poster_url || defaultListCoverUrl}
         alt={collection.name}
         className="liste-card-poster"
       />

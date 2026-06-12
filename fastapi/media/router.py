@@ -288,7 +288,7 @@ def _review_to_out(review, viewer_id: int, db: Session) -> dict:
         "media_id": review.media_id,
         "title": review.title,
         "content": review.content,
-        "contains_spoiler": review.spoiler_tag,
+        "contains_spoiler": review.spoiler_flag,
         "is_featured": review.is_featured,
         "is_flagged": review.is_flagged,
         "like_count": review.like_count,

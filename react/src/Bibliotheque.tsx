@@ -9,14 +9,49 @@ interface BibliothequeProps {
   onGoToLogin: () => void
 }
 
+interface RenameFormProps {
+  initialName: string
+  onSubmit: (newName: string) => void
+  onCancel: () => void
+}
+
+function RenameForm({ initialName, onSubmit, onCancel }: RenameFormProps) {
+  const [editedName, setEditedName] = useState(initialName)
+  return (
+    <form
+      className="liste-card-rename-form"
+      onClick={(event) => event.stopPropagation()}
+      onSubmit={(event) => { event.preventDefault(); onSubmit(editedName.trim()) }}
+    >
+      <input
+        autoFocus
+        required
+        className="liste-card-rename-input"
+        value={editedName}
+        onChange={(event) => setEditedName(event.target.value)}
+        onKeyDown={(event) => { if (event.key === 'Escape') onCancel() }}
+      />
+      <button type="submit" className="btn-liste-action">✔️</button>
+      <button type="button" className="btn-liste-action" onClick={onCancel}>✖️</button>
+    </form>
+  )
+}
+
 interface ListeCardProps {
   collection: Collection
   onOpen: () => void
-  onRename: () => void
+  onRename: (newName: string) => Promise<void>
   onDelete: () => void
 }
 
 function ListeCard({ collection, onOpen, onRename, onDelete }: ListeCardProps) {
+  const [isEditing, setIsEditing] = useState(false)
+
+  const submitRename = async (newName: string) => {
+    setIsEditing(false)
+    if (newName && newName !== collection.name) await onRename(newName)
+  }
+
   return (
     <div className="search-component-container liste-card" onClick={onOpen}>
       <img
@@ -24,14 +59,22 @@ function ListeCard({ collection, onOpen, onRename, onDelete }: ListeCardProps) {
         alt={collection.name}
         className="liste-card-poster"
       />
-      <h3 className="liste-card-name">{collection.name}</h3>
+      {isEditing ? (
+        <RenameForm
+          initialName={collection.name}
+          onSubmit={submitRename}
+          onCancel={() => setIsEditing(false)}
+        />
+      ) : (
+        <h3 className="liste-card-name">{collection.name}</h3>
+      )}
       <p className="liste-card-count">
         {collection.item_count} manga{collection.item_count > 1 ? "s" : ""}
         {!collection.is_default && (collection.is_public ? " · 🌐 publique" : " · 🔒 privée")}
       </p>
       {!collection.is_default && (
         <div className="liste-card-actions">
-          <button className="btn-liste-action" onClick={(event) => { event.stopPropagation(); onRename(); }}>✏️</button>
+          <button className="btn-liste-action" onClick={(event) => { event.stopPropagation(); setIsEditing(true); }}>✏️</button>
           <button className="btn-liste-action" onClick={(event) => { event.stopPropagation(); onDelete(); }}>🗑️</button>
         </div>
       )}
@@ -79,9 +122,7 @@ export default function Bibliotheque({ onGoToLogin }: BibliothequeProps) {
     }
   }
 
-  const handleRename = async (collection: Collection) => {
-    const newName = window.prompt("Nouveau nom :", collection.name)
-    if (!newName || newName === collection.name) return
+  const handleRename = async (collection: Collection, newName: string) => {
     try {
       await renameCollection(collection.id, newName)
       refreshCollections()
@@ -164,7 +205,7 @@ export default function Bibliotheque({ onGoToLogin }: BibliothequeProps) {
             key={collection.id}
             collection={collection}
             onOpen={() => setSelectedCollection(collection)}
-            onRename={() => handleRename(collection)}
+            onRename={(newName) => handleRename(collection, newName)}
             onDelete={() => handleDelete(collection)}
           />
         ))}
@@ -180,7 +221,7 @@ export default function Bibliotheque({ onGoToLogin }: BibliothequeProps) {
             key={collection.id}
             collection={collection}
             onOpen={() => setSelectedCollection(collection)}
-            onRename={() => handleRename(collection)}
+            onRename={(newName) => handleRename(collection, newName)}
             onDelete={() => handleDelete(collection)}
           />
         ))}

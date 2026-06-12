@@ -56,6 +56,23 @@
   color: var(--text-muted);
 }
 
+.liste-card-rename-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 10px 0 4px;
+}
+
+.liste-card-rename-input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--text-muted);
+  background: var(--bg-inner);
+  color: var(--text-main);
+}
+
 .liste-card-actions {
   position: absolute;
   top: 8px;

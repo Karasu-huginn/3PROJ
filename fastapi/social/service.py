@@ -25,21 +25,16 @@ def _follower_count(user_id: int, db: Session) -> int:
         Follows.following_id == user_id
     ).scalar() or 0
 
-
 def _following_count(user_id: int, db: Session) -> int:
     return db.query(func.count(Follows.id)).filter(
         Follows.follower_id == user_id
     ).scalar() or 0
-
 
 def _is_following(viewer_id: int, target_id: int, db: Session) -> bool:
     return db.query(Follows).filter(
         Follows.follower_id == viewer_id,
         Follows.following_id == target_id,
     ).first() is not None
-
-
-# ── Follow / Unfollow ────────────────────────────────────────────────────────
 
 def toggle_follow(current_user_id: int, target_id: int, db: Session) -> FollowOut:
     if current_user_id == target_id:
@@ -63,7 +58,6 @@ def toggle_follow(current_user_id: int, target_id: int, db: Session) -> FollowOu
         following = False
     else:
         db.add(Follows(follower_id=current_user_id, following_id=target_id))
-        # Enregistrer l'activité "follow"
         db.add(Activity(
             user_id=current_user_id,
             activity_type="follow",
@@ -77,7 +71,6 @@ def toggle_follow(current_user_id: int, target_id: int, db: Session) -> FollowOu
         follower_count=_follower_count(target_id, db),
         following_count=_following_count(target_id, db),
     )
-
 
 def get_followers(user_id: int, viewer_id: Optional[int], db: Session) -> list[FollowerItem]:
     rows = (
@@ -96,7 +89,6 @@ def get_followers(user_id: int, viewer_id: Optional[int], db: Session) -> list[F
         for u in rows
     ]
 
-
 def get_following(user_id: int, viewer_id: Optional[int], db: Session) -> list[FollowerItem]:
     rows = (
         db.query(Users)
@@ -114,9 +106,6 @@ def get_following(user_id: int, viewer_id: Optional[int], db: Session) -> list[F
         for u in rows
     ]
 
-
-# ── Profil public ─────────────────────────────────────────────────────────────
-
 def get_public_profile(user_id: int, viewer_id: Optional[int], db: Session):
     user = db.query(Users).filter(Users.id == user_id).first()
     if not user:
@@ -130,9 +119,6 @@ def get_public_profile(user_id: int, viewer_id: Optional[int], db: Session):
         "following_count": _following_count(user_id, db),
         "is_followed_by_viewer": _is_following(viewer_id, user_id, db) if viewer_id else False,
     }
-
-
-# ── Fil d'actualité ──────────────────────────────────────────────────────────
 
 def _activity_to_out(row: Activity, db: Session) -> ActivityOut:
     actor = db.query(Users).filter(Users.id == row.user_id).first()
@@ -171,9 +157,7 @@ def _activity_to_out(row: Activity, db: Session) -> ActivityOut:
         created_at=row.created_at,
     )
 
-
 def get_feed(current_user_id: int, db: Session, skip: int = 0, limit: int = 20):
-    # IDs des utilisateurs suivis
     followed_ids = [
         r.following_id
         for r in db.query(Follows.following_id)
@@ -195,15 +179,10 @@ def get_feed(current_user_id: int, db: Session, skip: int = 0, limit: int = 20):
     )
     return [_activity_to_out(r, db) for r in rows], total
 
-
-# ── Messagerie privée ────────────────────────────────────────────────────────
-
 def _mutual_follow(user_a: int, user_b: int, db: Session) -> bool:
-    """Les deux utilisateurs doivent se suivre mutuellement."""
     a_follows_b = _is_following(user_a, user_b, db)
     b_follows_a = _is_following(user_b, user_a, db)
     return a_follows_b and b_follows_a
-
 
 def send_message(sender_id: int, receiver_id: int, content: str, db: Session) -> MessageOut:
     if sender_id == receiver_id:
@@ -233,7 +212,6 @@ def send_message(sender_id: int, receiver_id: int, content: str, db: Session) ->
         read_at=msg.read_at,
     )
 
-
 def get_conversation(
     user_id: int,
     other_id: int,
@@ -260,7 +238,6 @@ def get_conversation(
         .all()
     )
 
-    # Marquer comme lus les messages reçus non lus
     now = datetime.now(timezone.utc)
     for msg in messages:
         if msg.receiver_id == user_id and msg.read_at is None:
@@ -279,10 +256,7 @@ def get_conversation(
         ))
     return result, total
 
-
 def list_conversations(user_id: int, db: Session) -> list[ConversationItem]:
-    """Retourne la liste des conversations avec le dernier message de chacune."""
-    # Tous les IDs avec qui l'utilisateur a échangé
     sent = db.query(PrivateMessages.receiver_id.label("other_id")).filter(
         PrivateMessages.sender_id == user_id
     )

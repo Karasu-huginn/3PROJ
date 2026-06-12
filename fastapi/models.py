@@ -16,8 +16,11 @@ class Users(Base):
     is_active = Column(Boolean, default=True)
     oauth_provider = Column(String, nullable=True)
     oauth_id = Column(String, nullable=True)
-    ratings  = relationship("Rating",  back_populates="user", lazy="dynamic")
-    reviews  = relationship("Reviews",  back_populates="user", foreign_keys="Reviews.user_id", lazy="dynamic")
+    ratings  = relationship("Rating", back_populates="user", lazy="dynamic")
+    reviews  = relationship("Reviews", back_populates="user", foreign_keys="Reviews.user_id", lazy="dynamic")
+    followers  = relationship("Follows", foreign_keys="Follows.following_id", back_populates="followed_user", lazy="dynamic")
+    followings = relationship("Follows", foreign_keys="Follows.follower_id",  back_populates="follower_user",  lazy="dynamic")
+
 
 class Media(Base):
     __tablename__ = 'media'
@@ -106,6 +109,8 @@ class Follows(Base):
     follower_id = Column(Integer, ForeignKey('users.id'))
     following_id = Column(Integer, ForeignKey('users.id'))
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    follower_user  = relationship("Users", foreign_keys=[follower_id],  back_populates="followings")
+    followed_user  = relationship("Users", foreign_keys=[following_id], back_populates="followers")
 
 class Notifications(Base):
     __tablename__ = 'notifications'
@@ -157,3 +162,15 @@ class Rating(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, onupdate=func.now())
     user = relationship("Users", back_populates="ratings")
+    
+class Activity(Base):
+    __tablename__ = 'activities'
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    activity_type = Column(String(32), nullable=False)
+    media_id = Column(String(36), ForeignKey('media.id'), nullable=True)
+    review_id = Column(Integer, ForeignKey('reviews.id'), nullable=True)
+    rating_score = Column(Float, nullable=True)
+    target_user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    user = relationship("Users", foreign_keys=[user_id])

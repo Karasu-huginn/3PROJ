@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -57,6 +57,14 @@ def logout(
 @router.get("/profile", response_model=UserResponse)
 def get_profile(current_user: current_user_dependency):
     return current_user
+
+@router.get("/users/search")
+def search_users(
+    q: str = Query(..., min_length=1),
+    db: Session = Depends(get_db),
+):
+    users = db.query(models.Users).filter(models.Users.pseudo.ilike(f"%{q}%")).all()
+    return [{"id": u.id, "pseudo": u.pseudo} for u in users]
 
 @router.get("/google")
 def google_login():

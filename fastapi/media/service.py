@@ -14,6 +14,7 @@ from media.schemas import (
     CommunityRating, ReviewFlagCreate,
 )
 from media import mangadex as mdx
+from models import Activity
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +111,19 @@ async def upsert_rating(media_id: str, user_id: int, payload: RatingCreate, db: 
     db.add(rating)
     db.commit()
     db.refresh(rating)
+    db.query(Activity).filter(
+        Activity.user_id == user_id,
+        Activity.media_id == media_id,
+        Activity.activity_type == "rating",
+    ).delete()
+
+    db.add(Activity(
+        user_id=user_id,
+        activity_type="rating",
+        media_id=media_id,
+        rating_score=payload.score,
+    ))
+    db.commit()
     return rating
 
 
@@ -169,6 +183,13 @@ async def create_review(media_id: str, user_id: int, payload: ReviewCreate, db: 
     db.add(review)
     db.commit()
     db.refresh(review)
+    db.add(Activity(
+        user_id=user_id,
+        activity_type="review",
+        media_id=media_id,
+        review_id=review.id,
+    ))
+    db.commit()
     return review
 
 def update_review(review_id: int, user_id: int, payload: ReviewUpdate, db: Session) -> Reviews:

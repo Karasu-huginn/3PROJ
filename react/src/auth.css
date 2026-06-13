@@ -1,0 +1,114 @@
+/* ==========================================================================
+   MON PROFIL - DESIGN DE LA CARTE ET DES BOUTONS
+   ========================================================================== */
+
+/* Conteneur principal du profil */
+.mon-profil-card {
+  background: #1a1a1a;
+  border: 2px solid #3498db;
+  border-radius: 12px;
+  padding: 25px;
+  max-width: 500px;
+  margin: 40px auto;
+  color: white;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* En-tête avec le titre et le bouton retour */
+.mon-profil-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 15px;
+}
+
+.mon-profil-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+/* Bouton : Retour à l'accueil */
+.mon-profil-retour {
+  background: transparent;
+  color: #3498db;
+  border: 1px solid #3498db;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.mon-profil-retour:hover {
+  background: #3498db;
+  color: white;
+}
+
+/* Image de l'avatar */
+.mon-profil-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid #3498db;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+/* Informations (Pseudo, email) */
+.mon-profil-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.mon-profil-pseudo {
+  margin: 0 0 5px 0;
+  font-size: 1.5rem;
+}
+
+.mon-profil-email {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+/* Boîte de la biographie */
+.mon-profil-bio {
+  background: #252525;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.mon-profil-bio strong {
+  color: #3498db;
+}
+
+.mon-profil-bio p {
+  margin: 8px 0 0 0;
+  color: #ddd;
+  line-height: 1.4;
+}
+
+/* Bouton : Se déconnecter */
+.mon-profil-logout {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.mon-profil-logout:hover {
+  background: #c0392b;
+}

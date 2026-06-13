@@ -1,443 +1,265 @@
-/* ==========================================================================
-   VARIABLES DE COULEURS (Inspirées de la charte graphique de ta maquette)
-   ========================================================================== */
-.app-container.light {
-  --bg-card: #ffffff;
-  --bg-inner: #f8fafc;
-  --bg-input: #f1f5f9;
-  --border-color: #e2e8f0;
-  --border-input: #cbd5e1;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --text-sub: #334155;
-  --accent-color: #2ab5cf; /* Le bleu/cyan de ScrumTeamSite */
-}
-
-.app-container.dark {
-  --bg-card: #111113;
-  --bg-inner: #0a0a0c;
-  --bg-input: #1c1c1e;
-  --border-color: #1c1c1e;
-  --border-input: #2c2c2e;
-  --text-main: #f1f5f9;
-  --text-muted: #64748b;
-  --text-sub: #cbd5e1;
-  --accent-color: #2ab5cf;
-}
-
-/* ==========================================================================
-   STRUCTURE DE LA PAGE (Grille principale à 2 colonnes)
-   ========================================================================== */
 .home-container {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 25px;
-  align-items: start;
-  width: 100%;
-}
-
-.feed-column {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.sidebar-column {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.loading-text {
-  text-align: center;
-  padding: 40px;
-  font-size: 1rem;
-  color: var(--text-muted);
-}
-
-/* ==========================================================================
-   COMPOSANTS / ENCADRÉS (Share Box, Feed Card, Sidebar Card)
-   ========================================================================== */
-.share-box, .feed-card, .sidebar-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+  gap: 30px;
+  max-width: 1150px;
+  margin: 0 auto;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-  text-align: left;
   box-sizing: border-box;
 }
 
-/* Zone de publication */
-.share-box-input-row {
+.home-main-content {
+  flex: 2;
   display: flex;
-  gap: 12px;
-  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
 }
 
-.feed-avatar-img {
+.home-sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 340px;
+  min-width: 280px;
+}
+
+/* On garde le fond sombre des cartes pour coller à ta maquette */
+.share-card, .sidebar-card, .activity-card {
+  background: #1c1c1f;
+  border-radius: 12px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.share-input-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #252529;
+  border-radius: 25px;
+  padding: 10px 18px;
+}
+
+.share-input-container input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+}
+
+.share-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.share-btn {
+  background: #252529;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.activity-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  background: #252529;
 }
 
-.share-box-input {
-  flex: 1;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-inner);
-  color: var(--text-main);
-  padding: 10px 18px;
-  border-radius: 20px;
-  outline: none;
-}
-
-.share-box-actions {
-  display: flex;
-  gap: 25px;
-  margin-top: 15px;
-  padding-left: 52px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.share-box-actions span {
-  cursor: pointer;
-}
-
-/* Barre latérale (Sidebar) */
-.sidebar-title {
-  margin: 0 0 15px 0;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.sidebar-title.empty-title {
-  margin: 0;
-}
-
-.sidebar-list {
+.activity-meta {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
-.manga-popular-item {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.manga-popular-cover {
-  width: 35px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-
-.manga-popular-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.manga-popular-author {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.see-more-link {
-  color: var(--accent-color);
-  font-size: 0.8rem;
-  margin-top: 12px;
-  cursor: pointer;
+.activity-author {
   font-weight: 600;
-  display: inline-block;
+  color: #ffffff;
 }
 
-/* ==========================================================================
-   ZONE DE RECHERCHE ET FILTRES (Intégration Recherche.tsx)
-   ========================================================================== */
-.search-wrapper-container {
-  background-color: var(--bg-card);
-  padding: 20px;
-  border-radius: 14px;
-  border: 1px solid var(--border-color);
-  animation: fadeIn 0.2s ease-in-out;
+.activity-date {
+  font-size: 0.78rem;
+  color: #777;
 }
 
-.search-back-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-
-.search-back-row span {
-  font-size: 0.85rem;
-  color: var(--accent-color);
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.search-component-container {
-  width: 100%;
-}
-
-.search-bar-row {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.search-input-field {
-  flex: 1;
-  padding: 12px 16px;
-  font-size: 0.95rem;
-  border-radius: 20px;
-  border: 1px solid var(--border-color);
-  outline: none;
-  background-color: var(--bg-inner);
-  color: var(--text-main);
-}
-
-.btn-filters-trigger {
-  padding: 0 20px;
-  border-radius: 20px;
-  border: none;
-  background-color: var(--accent-color);
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-/* Modale de filtres avancés */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(15, 23, 42, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(4px);
-}
-
-.modal-card {
-  background: var(--bg-card);
-  padding: 30px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 420px;
-  border: 1px solid var(--border-color);
-  text-align: left;
-}
-
-.modal-header-title {
-  margin: 0 0 20px 0;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 10px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.modal-input-group, .modal-input-group2 {
-  margin-bottom: 15px;
-}
-
-.modal-input-group2 {
-  margin-bottom: 25px;
-}
-
-.modal-input-group label, .modal-input-group2 label {
-  display: block;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-
-.modal-select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: var(--bg-inner);
-  color: var(--text-main);
-  border: 1px solid var(--border-input);
-  box-sizing: border-box;
-  outline: none;
-}
-
-.modal-actions-row {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.btn-modal-reset {
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: 1px solid var(--border-input);
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.btn-modal-apply {
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  background: var(--accent-color);
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* Grille de résultats MangaDex */
-.manga-results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 16px;
-}
-
-.manga-result-card {
-  background: var(--bg-card);
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  border: 1px solid var(--border-color);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.manga-result-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.manga-card-cover-img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.manga-card-body {
-  padding: 12px;
-  text-align: left;
-}
-
-.manga-card-body h4 {
-  margin: 0 0 4px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-main);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.manga-card-body p {
-  margin: 0 0 10px;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.manga-card-status-tag {
-  font-size: 0.65rem;
-  background: var(--bg-inner);
-  padding: 4px 8px;
-  border-radius: 6px;
-  color: var(--text-sub);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-/* Vue Détail d'un Manga */
-.manga-detail-container {
-  background: var(--bg-card);
-  text-align: left;
-}
-
-.btn-back {
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1px solid var(--border-input);
-  background: var(--bg-card);
-  color: var(--text-sub);
-  cursor: pointer;
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
-.manga-detail-layout {
-  display: flex;
-  gap: 30px;
-  flex-wrap: wrap;
-}
-
-.manga-detail-cover {
-  width: 180px;
-  height: 260px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-}
-
-.manga-detail-info {
-  flex: 1;
-  min-width: 260px;
-}
-
-.manga-detail-title {
-  margin: 0 0 15px 0;
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--text-main);
-}
-
-.manga-detail-meta-line {
-  margin: 6px 0;
-  font-size: 0.85rem;
-  color: var(--text-sub);
-}
-
-.manga-detail-genres {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin: 15px 0;
-}
-
-.genre-badge {
-  background: var(--bg-inner);
-  color: var(--text-sub);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.manga-detail-synopsis {
-  color: var(--text-muted);
+.activity-body {
+  color: #e0e0e0;
   line-height: 1.5;
-  font-size: 0.85rem;
-  margin-top: 15px;
 }
 
-.search-loading-text, .search-end-text, .error-message {
+/* Laisse ton thème global gérer la couleur du lien au lieu de forcer */
+.highlight-link {
+  color: var(--primary-color, #3498db);
+}
+
+.activity-media-cover {
+  display: block;
+  max-height: 140px;
+  border-radius: 6px;
+  margin-top: 12px;
+  object-fit: cover;
+}
+
+.sidebar-card h3 {
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  font-weight: 600;
+}
+
+.popular-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.popular-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Ta taille stricte pour les miniatures mangas */
+.manga-cover {
+  width: 36px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #252529;
+}
+
+.manga-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.manga-info h4 {
+  color: #ffffff;
+  margin: 0 0 3px 0;
+  font-weight: 500;
+}
+
+.manga-info span {
+  font-size: 0.78rem;
+  color: #777;
+}
+
+.sidebar-link {
+  font-size: 0.85rem;
+  color: var(--primary-color, #3498db);
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+/* MODALS */
+.profile-popover-overlay, .chat-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.profile-popover-card {
+  background: #1a1a1e;
+  border-radius: 16px;
+  padding: 24px;
+  width: 280px;
   text-align: center;
-  margin: 25px 0;
-  font-size: 0.85rem;
-  color: var(--text-muted);
 }
 
-/* Animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+.profile-popover-avatar-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 15px auto;
+  border-radius: 50%;
+  overflow: hidden;
 }
+
+.profile-popover-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-popover-username {
+  color: #fff;
+  margin: 0 0 20px 0;
+}
+
+.profile-popover-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.popover-btn-profile, .popover-btn-message {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  color: white;
+  cursor: pointer;
+  flex: 1;
+}
+
+.popover-btn-profile { background: #22a7cc; }
+.popover-btn-message { background: #3498db; }
+
+.chat-modal-card {
+  background: #141416;
+  border-radius: 12px;
+  width: 480px;
+  height: 540px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-modal-header, .chat-modal-footer {
+  padding: 15px 20px;
+  background: #141416;
+}
+
+.chat-modal-body {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.chat-bubble-wrapper {
+  display: flex;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.chat-bubble-wrapper.incoming { justify-content: flex-start; }
+.chat-bubble-wrapper.outgoing { justify-content: flex-end; }
+
+.chat-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  color: #fff;
+}
+
+.incoming .chat-bubble { background: #232326; }
+.outgoing .chat-bubble { background: #3498db; }

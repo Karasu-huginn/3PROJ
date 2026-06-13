@@ -77,16 +77,19 @@ class ReviewOut(BaseModel):
     id: int
     media_id: str
     title: str
-    body: str
-    contains_spoiler: bool
-    is_featured: bool
-    is_flagged: bool
-    like_count: int
-    comment_count: int
+    body: Optional[str] = ""                 
+    contains_spoiler: bool = False           
+    is_featured: bool = False
+    is_flagged: bool = False
+    like_count: int = 0
+    comment_count: int = 0
     author: ReviewAuthor
     created_at: datetime
     updated_at: Optional[datetime] = None
     viewer_has_liked: bool = False
+
+    class Config:
+        from_attributes = True
 
     class Config:
         from_attributes = True

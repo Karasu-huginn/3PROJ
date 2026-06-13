@@ -1,0 +1,146 @@
+/* Conteneur global */
+.search-wrapper-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: sans-serif;
+}
+
+/* Formulaire */
+.search-component-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.search-component-container input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+/* Grille des résultats */
+.user-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.user-card {
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    background: #1a1a1a; /* Fond sombre pour contraste */
+    color: white;
+}
+
+.user-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    background-color: #333;
+}
+
+/* Overlay Profil */
+.profile-overlay {
+    margin-top: 30px;
+    padding: 20px;
+    border: 2px solid #3498db;
+    border-radius: 12px;
+    background: #252525;
+    color: white;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.profile-container img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.stats {
+    display: flex;
+    gap: 20px;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+/* Boutons */
+button {
+    padding: 8px 16px;
+    cursor: pointer;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+/* Forçage de l'alignement pour le conteneur du profil */
+.profile-overlay {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 15px !important;
+    padding: 20px !important;
+    margin: 20px auto !important;
+    background: #1a1a1a !important; /* Couleur sombre cohérente */
+    border: 2px solid #3498db !important;
+    border-radius: 12px !important;
+    width: fit-content !important;
+    min-width: 300px !important;
+    color: white !important;
+}
+
+/* Forçage de la disposition des stats */
+.stats {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 20px !important;
+    font-weight: bold !important;
+    margin: 10px 0 !important;
+}
+
+/* On force le conteneur du profil à être un bloc indépendant et stable */
+.profile-container {
+    display: flex !important;
+    flex-direction: row !important; /* Aligne tout en ligne */
+    align-items: center !important; /* Centre verticalement */
+    justify-content: flex-start !important;
+    gap: 20px !important;
+    background: #1a1a1a !important; /* Fond sombre */
+    padding: 20px !important;
+    border-radius: 12px !important;
+    color: white !important;
+    margin: 20px 0 !important;
+    width: 100% !important;
+    max-width: 600px !important;
+}
+
+/* S'assure que le bouton ne sorte pas du flux */
+.profile-container button {
+    margin-left: auto !important; /* Pousse le bouton vers la droite */
+    flex-shrink: 0 !important;
+}
+
+/* S'assure que la bio ne prenne pas trop de place et ne casse pas la ligne */
+.profile-container p {
+    max-width: 200px !important;
+    font-size: 0.85rem !important;
+    color: #ccc !important;
+}

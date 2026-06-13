@@ -3,24 +3,22 @@
   --transition-speed: 0.3s;
 }
 
-/* Thème Sombre */
 .dark {
   --bg-app: #121214;
   --bg-card: #1a1a1e;
   --text-main: #ffffff;
   --text-muted: #a0a0a5;
-  --accent-color: #ff4757;
+  --accent-color: #2980b9;
   --border-color: #2f2f35;
   --hover-color: #252529;
 }
 
-/* Thème Clair */
 .light {
   --bg-app: #f5f7fb;
   --bg-card: #ffffff;
   --text-main: #1e1e24;
   --text-muted: #65676b;
-  --accent-color: #e84118;
+  --accent-color: #2980b9;
   --border-color: #e4e6eb;
   --hover-color: #f2f3f5;
 }

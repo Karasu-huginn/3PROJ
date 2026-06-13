@@ -23,7 +23,6 @@ app.add_middleware(                         #ajouter middleware à l'app
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 models.Base.metadata.create_all(bind=engine)
 
 @app.get('/')

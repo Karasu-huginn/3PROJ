@@ -1,0 +1,127 @@
+.feed-container {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #ffffff;
+}
+
+.feed-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Cartes d'activité */
+.feed-card {
+  background: #1a1a1e;
+  border: 1px solid #2d2d30;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.feed-card:hover {
+  transform: translateY(-2px);
+  border-color: #444;
+}
+
+/* En-tête de la carte */
+.feed-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.feed-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #252529;
+}
+
+.feed-header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.feed-actor-name {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.feed-date {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* Contenu de l'activité */
+.feed-card-body {
+  font-size: 1rem;
+  color: #e0e0e0;
+  line-height: 1.5;
+}
+
+.activity-follow p {
+  margin: 0;
+  color: #3498db; /* Teinte bleutée pour l'action de follow */
+}
+
+.activity-review p {
+  margin: 0 0 10px 0;
+}
+
+.activity-review strong {
+  color: #2ed573; /* Vert sympa pour souligner les notes */
+}
+
+/* Bloc de citation pour les avis */
+.feed-review-quote {
+  margin: 10px 0;
+  padding: 10px 15px;
+  background: #121214;
+  border-left: 3px solid #3498db;
+  font-style: italic;
+  border-radius: 0 8px 8px 0;
+  color: #aaa;
+}
+
+/* Aperçu de la couverture manga */
+.feed-media-preview {
+  margin-top: 15px;
+  display: flex;
+}
+
+.feed-media-cover {
+  max-height: 140px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #333;
+}
+
+/* États de chargement et d'erreur */
+.feed-status, .feed-error, .feed-empty {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+  color: #aaa;
+}
+
+.feed-error {
+  color: #ff4757;
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid #ff4757;
+  border-radius: 8px;
+  max-width: 500px;
+  margin: 20px auto;
+}

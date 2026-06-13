@@ -10,6 +10,8 @@ from social.schemas import (
     FeedResponse,
     MessageCreate, MessageOut, ConversationItem,
 )
+from models import Users
+from social import service
 
 router = APIRouter(tags=["Social"])
 
@@ -120,3 +122,7 @@ def send_message(
     current_user=Depends(get_current_user),
 ):
     return service.send_message(current_user.id, receiver_id, payload.content, db)
+
+@router.get("/users/search", summary="Rechercher des utilisateurs")
+def search_users(username: str, db: Session = Depends(get_db)):
+    return db.query(Users).filter(Users.pseudo.ilike(f"%{username}%")).all()

@@ -325,13 +325,13 @@ def _review_to_out(review, viewer_id: int, db: Session) -> dict:
         "id": review.id,
         "media_id": review.media_id,
         "title": review.title,
-        "content": review.content,
-        "contains_spoiler": review.spoiler_flag,
+        "body": getattr(review, "content", ""),                    
+        "contains_spoiler": bool(getattr(review, "spoiler_flag", False)), 
         "is_featured": review.is_featured,
         "is_flagged": review.is_flagged,
         "like_count": review.like_count,
-        "comment_count": review.comments.count(),
-        "author": {
+        "comment_count": review.comments.count(),                  
+        "author": {                                                
             "id": review.user.id,
             "username": review.user.pseudo,
             "avatar_url": getattr(review.user, "avatar_url", None),

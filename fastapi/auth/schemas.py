@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 from pydantic import BaseModel, EmailStr, field_validator
 
 class UserCreate(BaseModel):
@@ -28,7 +29,12 @@ class UserCreate(BaseModel):
         if not re.search(r"[^a-zA-Z0-9]", v):
             raise ValueError("Le mot de passe doit contenir au moins un caractère spécial")
         return v
-
+class UserUpdate(BaseModel):
+    pseudo: Optional[str] = None
+    bio: Optional[str] = None
+    avatar_url: Optional[str] = None
+    website_url: Optional[str] = None
+    theme: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -42,7 +48,8 @@ class UserResponse(BaseModel):
     avatar_url: str | None
     bio: str | None
     role: str
-
+    website_url: str | None = None
+    theme: str = "light"
     model_config = {"from_attributes": True}
 
 

@@ -20,6 +20,8 @@ class Users(Base):
     reviews  = relationship("Reviews", back_populates="user", foreign_keys="Reviews.user_id", lazy="dynamic")
     followers  = relationship("Follows", foreign_keys="Follows.following_id", back_populates="followed_user", lazy="dynamic")
     followings = relationship("Follows", foreign_keys="Follows.follower_id",  back_populates="follower_user",  lazy="dynamic")
+    website_url = Column(String, nullable=True)
+    theme = Column(String, default='light')
 
     @property
     def is_admin(self):
@@ -119,10 +121,14 @@ class Follows(Base):
 class Notifications(Base):
     __tablename__ = 'notifications'
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    type = Column(String)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable = False)
+    type = Column(String(32), nullable= False)
+    actor_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    review_id = Column(Integer, ForeignKey('reviews.id'), nullable=True)
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    actor = relationship("Users", foreign_keys=[actor_id])
+    review = relationship("Reviews", foreign_keys=[review_id])
 
 class PrivateMessages(Base):
     __tablename__ = 'privateMessages'

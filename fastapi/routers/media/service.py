@@ -15,6 +15,7 @@ from routers.media.schemas import (
 )
 from routers.media import mangadex as mdx
 from models import Activity
+from notifications.service import create_notification
 
 logger = logging.getLogger(__name__)
 
@@ -100,30 +101,25 @@ async def upsert_rating(media_id: str, user_id: int, payload: RatingCreate, db: 
         select(Rating).where(Rating.media_id == media_id, Rating.user_id == user_id)
     ).scalar_one_or_none()
 
-    if existing:
-        existing.score = payload.score
-        existing.updated_at = datetime.now(timezone.utc)
-        db.commit()
-        db.refresh(existing)
-        return existing
-
-    rating = Rating(media_id=media_id, user_id=user_id, score=payload.score)
-    db.add(rating)
-    db.commit()
-    db.refresh(rating)
     db.query(Activity).filter(
         Activity.user_id == user_id,
         Activity.media_id == media_id,
         Activity.activity_type == "rating",
     ).delete()
 
-    db.add(Activity(
-        user_id=user_id,
-        activity_type="rating",
-        media_id=media_id,
-        rating_score=payload.score,
-    ))
+    if existing:
+        existing.score = payload.score
+        existing.updated_at = datetime.now(timezone.utc)
+        db.add(Activity(user_id=user_id, activity_type="rating", media_id=media_id, rating_score=payload.score))
+        db.commit()
+        db.refresh(existing)
+        return existing
+
+    rating = Rating(media_id=media_id, user_id=user_id, score=payload.score)
+    db.add(rating)
+    db.add(Activity(user_id=user_id, activity_type="rating", media_id=media_id, rating_score=payload.score))
     db.commit()
+    db.refresh(rating)
     return rating
 
 
@@ -318,6 +314,8 @@ def toggle_like(review_id: int, user_id: int, db: Session) -> dict:
     like = Likes(review_id=review_id, user_id=user_id)
     db.add(like)
     db.commit()
+    review = db.query(Reviews).filter(Reviews.id == review_id).first()
+    create_notification(db, user_id=review.user_id, type="like", actor_id=user_id, review_id=review_id)
     return {"liked": True, "like_count": review.like_count}
 
 def add_comment(review_id: int, user_id: int, content: str, db: Session) -> Comments:
@@ -328,6 +326,7 @@ def add_comment(review_id: int, user_id: int, content: str, db: Session) -> Comm
     db.add(comment)
     db.commit()
     db.refresh(comment)
+    create_notification(db, user_id=review.user_id, type="comment", actor_id=user_id, review_id=review_id)
     return comment
 
 def delete_comment(comment_id: int, user_id: int, is_admin: bool, db: Session) -> None:

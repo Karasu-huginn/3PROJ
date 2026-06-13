@@ -13,19 +13,6 @@ from social.schemas import (
 
 router = APIRouter(tags=["Social"])
 
-@router.get(
-    "/users/{user_id}/profile",
-    summary="Profil public d'un utilisateur",
-    response_model=UserPublicProfile,
-)
-def get_profile(
-    user_id: int,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_optional_user),
-):
-    viewer_id = current_user.id if current_user else None
-    return service.get_public_profile(user_id, viewer_id, db)
-
 @router.post(
     "/users/{user_id}/follow",
     summary="Suivre ou ne plus suivre un utilisateur (toggle)",

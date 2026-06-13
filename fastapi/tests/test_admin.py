@@ -18,7 +18,6 @@ import models
 from conftest import login_as
 
 
-# ── Fixtures ────────────────────────────────────────────────────────────────
 
 @pytest.fixture()
 def admin_user(db_session):
@@ -66,7 +65,6 @@ def flagged_review(db_session, seeded_review):
     return seeded_review
 
 
-# ── Contrôle d'accès ────────────────────────────────────────────────────────
 
 class TestAdminAccessControl:
     def test_user_cannot_list_flagged_reviews(self, client, regular_user):
@@ -100,7 +98,7 @@ class TestAdminAccessControl:
         assert r.status_code == 403
 
 
-# ── GET /admin/flagged-reviews ───────────────────────────────────────────────
+
 
 class TestListFlaggedReviews:
     def test_returns_empty_when_no_flags(self, client, admin_user, seeded_review):
@@ -128,7 +126,7 @@ class TestListFlaggedReviews:
         assert r.json()["total"] == 1
 
 
-# ── POST /admin/reviews/{id}/unflag ─────────────────────────────────────────
+
 
 class TestUnflagReview:
     def test_unflag_clears_flag(self, client, admin_user, flagged_review, db_session):
@@ -145,7 +143,6 @@ class TestUnflagReview:
         assert r.status_code == 404
 
 
-# ── POST /admin/reviews/{id}/feature ────────────────────────────────────────
 
 class TestFeatureReview:
     def test_feature_activates(self, client, admin_user, seeded_review, db_session):
@@ -170,8 +167,6 @@ class TestFeatureReview:
         assert r.status_code == 404
 
 
-# ── DELETE /admin/reviews/{id} ───────────────────────────────────────────────
-
 class TestAdminDeleteReview:
     def test_delete_removes_review(self, client, admin_user, seeded_review, db_session):
         login_as(admin_user)
@@ -186,8 +181,6 @@ class TestAdminDeleteReview:
         r = client.delete("/admin/reviews/99999")
         assert r.status_code == 404
 
-
-# ── GET /admin/users ─────────────────────────────────────────────────────────
 
 class TestListUsers:
     def test_returns_all_users(self, client, admin_user, regular_user):
@@ -222,7 +215,6 @@ class TestListUsers:
         assert "created_at" in user
 
 
-# ── POST /admin/users/{id}/ban ───────────────────────────────────────────────
 
 class TestBanUser:
     def test_ban_deactivates_user(self, client, admin_user, regular_user, db_session):
@@ -254,7 +246,6 @@ class TestBanUser:
         assert r.status_code == 400
 
 
-# ── POST /admin/users/{id}/unban ─────────────────────────────────────────────
 
 class TestUnbanUser:
     def test_unban_reactivates_user(self, client, admin_user, regular_user, db_session):

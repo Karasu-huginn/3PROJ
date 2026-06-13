@@ -6,9 +6,10 @@ const API_BASE = import.meta.env.VITE_API_BASE
 
 interface AuthProps {
   onBackToHome: () => void;
+  onAuthChange?: () => void;
 }
 
-export default function Auth({ onBackToHome }: AuthProps) {
+export default function Auth({ onBackToHome, onAuthChange }: AuthProps) {
   const [user, setUser] = useState<any>(null)
   const [isRegister, setIsRegister] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -55,11 +56,16 @@ export default function Auth({ onBackToHome }: AuthProps) {
       const data = await res.json()
 
       if (!res.ok) {
-        throw new Error(data.detail || "Une erreur est survenue")
+        const detail = data.detail
+        const msg = Array.isArray(detail)
+          ? detail.map((e: any) => e.msg ?? e).join(" · ")
+          : (typeof detail === "string" ? detail : "Une erreur est survenue")
+        throw new Error(msg)
       }
 
       localStorage.setItem("token", data.access_token)
       fetchUserProfile(data.access_token)
+      onAuthChange?.()
       setMessage({ text: "Connexion réussie !", isError: false })
     } catch (err: any) {
       setMessage({ text: err.message, isError: true })
@@ -71,6 +77,7 @@ export default function Auth({ onBackToHome }: AuthProps) {
   const logout = () => {
     localStorage.removeItem("token")
     setUser(null)
+    onAuthChange?.()
   };
 
   if (user) {

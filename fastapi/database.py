@@ -7,7 +7,11 @@ import os
 load_dotenv()
 URL_DATABASE = os.getenv("DATABASE_URL")
 
-engine = create_engine(URL_DATABASE)
+if not URL_DATABASE:
+    raise RuntimeError("DATABASE_URL manquant dans le fichier .env")
+
+connect_args = {"check_same_thread": False} if URL_DATABASE.startswith("sqlite") else {}
+engine = create_engine(URL_DATABASE, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False,bind=engine)
 
 Base = declarative_base()

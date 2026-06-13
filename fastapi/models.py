@@ -21,6 +21,10 @@ class Users(Base):
     followers  = relationship("Follows", foreign_keys="Follows.following_id", back_populates="followed_user", lazy="dynamic")
     followings = relationship("Follows", foreign_keys="Follows.follower_id",  back_populates="follower_user",  lazy="dynamic")
 
+    @property
+    def is_admin(self):
+        return self.role == "admin"
+
 
 class Media(Base):
     __tablename__ = 'media'

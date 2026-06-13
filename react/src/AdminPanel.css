@@ -1,0 +1,416 @@
+.admin-panel {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.admin-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: var(--text-primary, #fff);
+}
+
+/* ── Onglets ── */
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color, #333);
+  padding-bottom: 0.75rem;
+}
+
+.admin-tab-btn {
+  background: transparent;
+  border: 1px solid var(--border-color, #444);
+  color: var(--text-secondary, #aaa);
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s;
+}
+
+.admin-tab-btn.active {
+  background: var(--accent-color, #e74c3c);
+  border-color: var(--accent-color, #e74c3c);
+  color: #fff;
+}
+
+.admin-badge {
+  background: #e74c3c;
+  color: #fff;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.admin-badge-muted {
+  background: #555;
+  color: #ccc;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.75rem;
+}
+
+/* ── Section ── */
+.admin-section { display: flex; flex-direction: column; gap: 1rem; }
+
+.admin-loading,
+.admin-empty {
+  text-align: center;
+  color: var(--text-secondary, #aaa);
+  padding: 2rem;
+}
+
+/* ── Carte signalement ── */
+.admin-report-card {
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border-color, #333);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.admin-report-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-report-author {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.admin-banned-tag {
+  background: #c0392b;
+  color: #fff;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.admin-report-date {
+  color: var(--text-secondary, #888);
+  font-size: 0.8rem;
+}
+
+.admin-report-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary, #fff);
+}
+
+.admin-report-content {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #bbb);
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.admin-report-reason {
+  font-size: 0.82rem;
+  background: rgba(231, 76, 60, 0.12);
+  border-left: 3px solid #e74c3c;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  color: var(--text-primary, #ddd);
+}
+
+.admin-spoiler-tag {
+  color: #f39c12;
+}
+
+.admin-report-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── Boutons admin ── */
+.btn-admin-sm {
+  border: none;
+  border-radius: 5px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+
+.btn-admin-sm:hover { opacity: 0.85; }
+
+.btn-unflag  { background: #27ae60; color: #fff; }
+.btn-feature { background: #8e44ad; color: #fff; }
+.btn-delete  { background: #c0392b; color: #fff; }
+.btn-ban     { background: #e67e22; color: #fff; }
+.btn-unban   { background: #27ae60; color: #fff; }
+
+/* ── Table utilisateurs ── */
+.admin-user-search {
+  margin-bottom: 0.75rem;
+}
+
+.admin-search-input {
+  width: 100%;
+  max-width: 320px;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border-color, #444);
+  border-radius: 6px;
+  background: var(--input-bg, #111);
+  color: var(--text-primary, #fff);
+  font-size: 0.9rem;
+}
+
+.admin-users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.87rem;
+}
+
+.admin-users-table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border-color, #333);
+  color: var(--text-secondary, #aaa);
+  font-weight: 600;
+}
+
+.admin-users-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border-color, #222);
+  color: var(--text-primary, #ddd);
+  vertical-align: middle;
+}
+
+.admin-user-banned td {
+  opacity: 0.6;
+}
+
+.admin-user-name {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.admin-avatar-sm {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.admin-role-tag {
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.role-admin { background: #8e44ad; color: #fff; }
+.role-user  { background: #2c3e50; color: #bbb; }
+
+.admin-status-active { color: #2ecc71; font-weight: 600; }
+.admin-status-banned { color: #e74c3c; font-weight: 600; }
+
+/* ── Contrôles admin sur les critiques (MangaDetailModal) ── */
+.review-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.review-item-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.btn-flag-review {
+  background: transparent;
+  border: 1px solid #e67e22;
+  color: #e67e22;
+  border-radius: 5px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-flag-review:hover { background: rgba(230, 126, 34, 0.15); }
+
+.btn-admin-feature {
+  background: transparent;
+  border: 1px solid #8e44ad;
+  color: #8e44ad;
+  border-radius: 5px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-admin-feature:hover { background: rgba(142, 68, 173, 0.15); }
+
+.btn-admin-delete {
+  background: transparent;
+  border: 1px solid #c0392b;
+  color: #c0392b;
+  border-radius: 5px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-admin-delete:hover { background: rgba(192, 57, 43, 0.15); }
+
+/* ── Badges review ── */
+.featured-review-block {
+  border: 1px solid #8e44ad;
+  background: rgba(142, 68, 173, 0.08);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.featured-badge {
+  display: inline-block;
+  background: #8e44ad;
+  color: #fff;
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.featured-badge-small {
+  display: inline-block;
+  background: #8e44ad;
+  color: #fff;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+.review-featured {
+  border-color: #8e44ad !important;
+  background: rgba(142, 68, 173, 0.06);
+}
+
+.review-flagged { border-color: #c0392b !important; }
+
+.review-flagged-tag {
+  display: inline-block;
+  background: rgba(192, 57, 43, 0.15);
+  color: #e74c3c;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-left: 0.4rem;
+}
+
+/* ── Modale de signalement ── */
+.flag-modal-overlay {
+  z-index: 1100;
+}
+
+.flag-modal {
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border-color, #444);
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.flag-modal h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary, #fff);
+}
+
+.flag-modal p {
+  color: var(--text-secondary, #aaa);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.flag-reason-select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color, #444);
+  border-radius: 6px;
+  background: var(--input-bg, #111);
+  color: var(--text-primary, #fff);
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.flag-custom-reason {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color, #444);
+  border-radius: 6px;
+  background: var(--input-bg, #111);
+  color: var(--text-primary, #fff);
+  font-size: 0.87rem;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.flag-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.btn-flag-cancel {
+  background: transparent;
+  border: 1px solid var(--border-color, #555);
+  color: var(--text-secondary, #aaa);
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.btn-flag-submit {
+  background: #e74c3c;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.btn-flag-submit:hover { background: #c0392b; }

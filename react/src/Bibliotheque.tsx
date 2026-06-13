@@ -7,6 +7,8 @@ import './Bibliotheque.css'
 
 interface BibliothequeProps {
   onGoToLogin: () => void
+  currentUserRole?: string
+  currentUserId?: number
 }
 
 interface RenameFormProps {
@@ -82,7 +84,7 @@ function ListeCard({ collection, onOpen, onRename, onDelete }: ListeCardProps) {
   )
 }
 
-export default function Bibliotheque({ onGoToLogin }: BibliothequeProps) {
+export default function Bibliotheque({ onGoToLogin, currentUserRole, currentUserId }: BibliothequeProps) {
   const isLoggedIn = Boolean(localStorage.getItem('token'))
   const [collections, setCollections] = useState<Collection[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -157,6 +159,8 @@ export default function Bibliotheque({ onGoToLogin }: BibliothequeProps) {
       <ListeDetail
         collectionId={selectedCollection.id}
         onBack={() => { setSelectedCollection(null); refreshCollections(); }}
+        currentUserRole={currentUserRole}
+        currentUserId={currentUserId}
       />
     )
   }

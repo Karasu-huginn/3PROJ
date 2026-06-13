@@ -5,7 +5,12 @@ import defaultCoverUrl from './assets/default-cover.svg'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
-export default function Recherche() {
+interface RechercheProps {
+  currentUserRole?: string
+  currentUserId?: number
+}
+
+export default function Recherche({ currentUserRole, currentUserId }: RechercheProps = {}) {
   const [mangas, setMangas] = useState<any[]>([])
   const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(false)
@@ -159,7 +164,13 @@ export default function Recherche() {
       {!hasMore && mangas.length > 0 && <div className="status-message-centered" style={{opacity: 0.5}}>Fin de la collection. ✨</div>}
 
       {selectedMangaId && (
-        <MangaDetailModal key={selectedMangaId} mangaId={selectedMangaId} onClose={() => setSelectedMangaId(null)} />
+        <MangaDetailModal
+          key={selectedMangaId}
+          mangaId={selectedMangaId}
+          onClose={() => setSelectedMangaId(null)}
+          currentUserRole={currentUserRole}
+          currentUserId={currentUserId}
+        />
       )}
     </div>
   )

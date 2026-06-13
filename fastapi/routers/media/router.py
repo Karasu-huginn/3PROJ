@@ -2,14 +2,15 @@ from __future__ import annotations
 from typing import Annotated, Optional
 
 import httpx
+import models
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from auth.dependencies import get_db
-from auth.dependencies import get_current_user, get_optional_user
+from auth.dependencies import get_current_user, get_optional_user, require_admin
 
-from media import service
-from media.schemas import (
+from routers.media import service
+from routers.media.schemas import (
     MediaDetail, MediaBrief, MediaPageResponse, CommunityRating,
     RatingCreate, RatingOut,
     ReviewCreate, ReviewUpdate, ReviewOut, ReviewFlagCreate,
@@ -46,7 +47,7 @@ async def search_manga(
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
 ):
-    from media import mangadex as mdx
+    from routers.media import mangadex as mdx
     return await mdx.search_manga(
         query=title or "",
         limit=limit, offset=offset,
@@ -253,7 +254,7 @@ def flag_review(
 def feature_review(
     review_id: int,
     db: Session = Depends(get_db),
-    #_: None = Depends(require_admin), à mettre quand les rôles seront faits
+    _: models.Users = Depends(require_admin),
 ):
     service.feature_review(review_id, db)
     return {"detail": "Critique mise en avant."}

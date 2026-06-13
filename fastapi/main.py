@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from media.router import router as media_router
 from routers.social import router as social_router
 import routers.collections as CR
+from routers.notifications import router as notifications_router
 
 
 app = FastAPI()
@@ -34,3 +35,4 @@ app.include_router(auth_router)
 app.include_router(media_router)
 app.include_router(CR.router)
 app.include_router(social_router)
+app.include_router(notifications_router)

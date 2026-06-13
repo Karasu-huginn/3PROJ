@@ -12,6 +12,7 @@ from social.schemas import (
     ActivityOut, AuthorBrief, FollowOut, FollowerItem,
     MessageOut, ConversationItem,
 )
+from notifications.service import create_notification
 
 def _author(user: Users) -> AuthorBrief:
     return AuthorBrief(
@@ -65,6 +66,7 @@ def toggle_follow(current_user_id: int, target_id: int, db: Session) -> FollowOu
         ))
         db.commit()
         following = True
+        create_notification(db, user_id=target_id, type="follow", actor_id=current_user_id)
 
     return FollowOut(
         following=following,

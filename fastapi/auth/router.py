@@ -53,19 +53,6 @@ def logout(
         auth_service.revoke_token(db, jti)
     return MessageResponse(message="Deconnexion reussie")
 
-
-@router.get("/profile", response_model=UserResponse)
-def get_profile(current_user: current_user_dependency):
-    return current_user
-
-@router.get("/users/search")
-def search_users(
-    q: str = Query(..., min_length=1),
-    db: Session = Depends(get_db),
-):
-    users = db.query(models.Users).filter(models.Users.pseudo.ilike(f"%{q}%")).all()
-    return [{"id": u.id, "pseudo": u.pseudo} for u in users]
-
 @router.get("/google")
 def google_login():
     if not GOOGLE_CLIENT_ID:

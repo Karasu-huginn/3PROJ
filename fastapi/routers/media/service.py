@@ -9,11 +9,11 @@ from sqlalchemy import func, select
 from fastapi import HTTPException, status
 
 from models import Media, Rating, Reviews, Likes, Comments
-from media.schemas import (
+from routers.media.schemas import (
     RatingCreate, ReviewCreate, ReviewUpdate,
     CommunityRating, ReviewFlagCreate,
 )
-from media import mangadex as mdx
+from routers.media import mangadex as mdx
 from models import Activity
 from notifications.service import create_notification
 

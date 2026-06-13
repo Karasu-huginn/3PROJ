@@ -23,6 +23,10 @@ class Users(Base):
     website_url = Column(String, nullable=True)
     theme = Column(String, default='light')
 
+    @property
+    def is_admin(self):
+        return self.role == "admin"
+
 
 class Media(Base):
     __tablename__ = 'media'

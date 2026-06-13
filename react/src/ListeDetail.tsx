@@ -7,9 +7,11 @@ import defaultCoverUrl from './assets/default-cover.svg'
 interface ListeDetailProps {
   collectionId: number
   onBack: () => void
+  currentUserRole?: string
+  currentUserId?: number
 }
 
-export default function ListeDetail({ collectionId, onBack }: ListeDetailProps) {
+export default function ListeDetail({ collectionId, onBack, currentUserRole, currentUserId }: ListeDetailProps) {
   const [detail, setDetail] = useState<CollectionDetail | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
@@ -81,7 +83,9 @@ export default function ListeDetail({ collectionId, onBack }: ListeDetailProps) 
         <MangaDetailModal
           key={selectedMangaId}
           mangaId={selectedMangaId}
-          onClose={() => { setSelectedMangaId(null); refreshItems(); }}  //* because quick-add inside the modal can remove the manga from this very list
+          onClose={() => { setSelectedMangaId(null); refreshItems(); }}
+          currentUserRole={currentUserRole}
+          currentUserId={currentUserId}
         />
       )}
     </div>

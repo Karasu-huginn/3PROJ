@@ -5,8 +5,9 @@ from database import engine, get_db
 from sqlalchemy.orm import Session
 from auth.router import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
-from media.router import router as media_router
+from routers.media.router import router as media_router
 from routers.social import router as social_router
+from routers.admin import router as admin_router
 import routers.collections as CR
 from routers.notifications import router as notifications_router
 from routers.users import router as users_router
@@ -14,8 +15,10 @@ from routers.users import router as users_router
 
 app = FastAPI()
 
-origins = [                                 #autoriser connexion depuis localhost 3000
-    'http://localhost:3000'
+origins = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
 ]
 
 app.add_middleware(                         #ajouter middleware à l'app
@@ -36,5 +39,6 @@ app.include_router(auth_router)
 app.include_router(media_router)
 app.include_router(CR.router)
 app.include_router(social_router)
+app.include_router(admin_router)
 app.include_router(notifications_router)
 app.include_router(users_router)

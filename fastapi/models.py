@@ -20,6 +20,8 @@ class Users(Base):
     reviews  = relationship("Reviews", back_populates="user", foreign_keys="Reviews.user_id", lazy="dynamic")
     followers  = relationship("Follows", foreign_keys="Follows.following_id", back_populates="followed_user", lazy="dynamic")
     followings = relationship("Follows", foreign_keys="Follows.follower_id",  back_populates="follower_user",  lazy="dynamic")
+    website_url = Column(String, nullable=True)
+    theme = Column(String, default='light')
 
 
 class Media(Base):
